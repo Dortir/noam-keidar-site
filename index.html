@@ -8,15 +8,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;700;900&family=Assistant:wght@400;500;600;700;800&family=Suez+One&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#e9e4d8;
-    --card:#f4f0e5;
-    --ink:#241c1a;
-    --ink-soft:#5b5048;
-    --accent:#c98a3c;
-    --accent2:#a5c93c;
-    --tint-a:#f7eee3;
-    --tint-b:#f2f7e3;
-    --line:rgba(36,28,26,0.14);
+    --paper:#17111c;
+    --card:#1f1626;
+    --ink:#f3ebe1;
+    --ink-soft:rgba(243,235,225,.62);
+    --accent:#db5c80;
+    --accent2:#e8974c;
+    --tint-a:#30171e;
+    --tint-b:#3b291c;
+    --line:rgba(243,235,225,.12);
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
@@ -38,7 +38,7 @@
 
   nav.sitenav{
     position:sticky; top:0; z-index:40;
-    background:rgba(244,240,229,.9);
+    background:rgba(23,17,28,.85);
     backdrop-filter:blur(6px);
     border-bottom:1px solid var(--line);
   }
@@ -166,6 +166,88 @@
     background:linear-gradient(90deg, var(--accent), var(--accent2));
   }
 
+  /* Camera viewfinder HUD - optional decorative overlay on the hero photo */
+  .viewfinder-hud{
+    position:absolute; inset:0; z-index:2; pointer-events:none;
+    font-family:ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  }
+  .vf-top, .vf-bottom{
+    position:absolute; left:18px; right:18px;
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:11px; letter-spacing:1px; color:#f3ebe1;
+  }
+  .vf-top{ top:18px; }
+  .vf-bottom{ bottom:18px; }
+  .vf-chip{
+    display:inline-flex; align-items:center; gap:6px;
+    background:rgba(12,9,15,.55); padding:5px 11px; border-radius:30px;
+    backdrop-filter:blur(4px);
+  }
+  .vf-rec{
+    width:8px; height:8px; border-radius:50%; background:#ff3b46;
+  }
+  @media (prefers-reduced-motion: no-preference){
+    .vf-rec{ animation:recBlink 1.4s step-end infinite; }
+  }
+  @keyframes recBlink{ 50%{ opacity:0; } }
+  .vf-corner{ position:absolute; width:26px; height:26px; opacity:.8; }
+  .vf-tl{ top:14px; right:14px; border-top:2px solid #f3ebe1; border-right:2px solid #f3ebe1; }
+  .vf-tr{ top:14px; left:14px; border-top:2px solid #f3ebe1; border-left:2px solid #f3ebe1; }
+  .vf-bl{ bottom:14px; right:14px; border-bottom:2px solid #f3ebe1; border-right:2px solid #f3ebe1; }
+  .vf-br{ bottom:14px; left:14px; border-bottom:2px solid #f3ebe1; border-left:2px solid #f3ebe1; }
+  .vf-reticle{
+    position:absolute; top:50%; left:50%; width:46px; height:46px;
+    transform:translate(-50%,-50%); opacity:.4;
+  }
+  .vf-reticle::before, .vf-reticle::after{
+    content:''; position:absolute; background:#f3ebe1;
+  }
+  .vf-reticle::before{ top:50%; left:0; right:0; height:1px; }
+  .vf-reticle::after{ left:50%; top:0; bottom:0; width:1px; }
+  @media (max-width:640px){
+    .vf-top, .vf-bottom{ font-size:9.5px; left:12px; right:12px; }
+    .vf-chip{ padding:4px 8px; }
+    .vf-corner{ width:18px; height:18px; }
+  }
+
+  /* Film-strip process timeline */
+  .filmstrip-section{ padding:50px 0 56px; }
+  .filmstrip-scroll{ overflow-x:auto; padding:0 clamp(16px,4vw,48px); -webkit-overflow-scrolling:touch; }
+  .filmstrip{
+    display:inline-block; min-width:100%;
+    background:var(--card); border-radius:6px;
+    box-shadow:0 20px 50px -25px rgba(0,0,0,.4);
+  }
+  .sprockets{ display:flex; gap:10px; overflow:hidden; padding:9px 14px; }
+  .sprockets .hole{ flex:none; width:10px; height:12px; border-radius:2px; background:var(--paper); }
+  .frames{ display:flex; gap:4px; padding:0 6px; }
+  .frame{
+    flex:1 1 0; min-width:170px;
+    border:1px solid var(--line);
+    padding:24px 18px 26px;
+    position:relative;
+  }
+  .frame-final{
+    background:linear-gradient(160deg, var(--tint-b), var(--card));
+    border:1px solid rgba(var(--accent-rgb,219,92,128),.3);
+  }
+  .frame-num{
+    font-family:'Frank Ruhl Libre', serif;
+    font-weight:900; font-size:42px; line-height:1;
+    color:var(--accent); opacity:.85;
+  }
+  .frame:nth-child(even) .frame-num{ color:var(--accent2); }
+  .frame h3{
+    font-family:'Frank Ruhl Libre', serif;
+    font-size:19px; margin:10px 0 6px; font-weight:700;
+  }
+  .frame p{ color:var(--ink-soft); font-size:13.5px; line-height:1.5; margin:0; }
+  @media (max-width:640px){
+    .frame{ min-width:150px; padding:18px 14px 20px; }
+    .frame-num{ font-size:32px; }
+    .frame h3{ font-size:16px; }
+  }
+
   .about-section p{font-size:16.5px; max-width:680px; color:var(--ink-soft);}
 
   .gallery{
@@ -253,8 +335,8 @@
   table.hours td:first-child{font-weight:700;}
 
   footer{
-    background:var(--ink);
-    color:#f1ede4;
+    background:#0c090f;
+    color:#f3ebe1;
     padding:46px 0 30px;
   }
   footer h2{
@@ -353,7 +435,7 @@
 <nav class="sitenav">
   <div class="wrap">
     <span class="brand">נועם קידר הפקות</span>
-    <div class="links"><a href="#top">בית</a><a href="#about">עלינו</a><a href="#gallery">גלריה</a><a href="#services">שירותים</a><a href="#testimonials">המלצות</a><a href="#hours">שעות</a><a href="#contact">צרו קשר</a></div>
+    <div class="links"><a href="#top">בית</a><a href="#process">תהליך</a><a href="#about">עלינו</a><a href="#gallery">גלריה</a><a href="#services">שירותים</a><a href="#testimonials">המלצות</a><a href="#hours">שעות</a><a href="#contact">צרו קשר</a></div>
   </div>
 </nav>
 
@@ -375,7 +457,70 @@
       </div>
     </div>
   </div>
+  
+    <div class="viewfinder-hud" aria-hidden="true">
+      <div class="vf-top">
+        <span class="vf-chip"><span class="vf-rec"></span>REC</span>
+        <span class="vf-chip" dir="ltr">00:12:04</span>
+      </div>
+      <div class="vf-bottom">
+        <span class="vf-chip" dir="ltr">F2.8 · 1/50 · ISO 800</span>
+        <span class="vf-chip">נועם קידר הפקות</span>
+      </div>
+      <span class="vf-corner vf-tl"></span>
+      <span class="vf-corner vf-tr"></span>
+      <span class="vf-corner vf-bl"></span>
+      <span class="vf-corner vf-br"></span>
+      <span class="vf-reticle"></span>
+    </div>
+  
 </header>
+
+
+<section class="filmstrip-section reveal" id="process">
+  <div class="wrap">
+    <p class="eyebrow" style="text-align:center;">SC. 01 — התהליך</p>
+    <h2 class="section-title" style="text-align:center;">איך זה עובד</h2>
+    <div class="title-bar" style="margin-inline:auto;"></div>
+  </div>
+  <div class="filmstrip-scroll">
+    <div class="filmstrip">
+      <div class="sprockets"><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span></div>
+      <div class="frames">
+    <div class="frame">
+      <span class="frame-num">01</span>
+      <h3>רעיון</h3>
+      <p>הכל מתחיל בשיחה ובשאלה הנכונה — מה הסיפור שרוצים לספר.</p>
+    </div>
+  
+    <div class="frame">
+      <span class="frame-num">02</span>
+      <h3>תחקיר וכתיבה</h3>
+      <p>מחקר, מקורות ובניית מבנה — סיפור שמחזיק ומבוסס.</p>
+    </div>
+  
+    <div class="frame">
+      <span class="frame-num">03</span>
+      <h3>צילום</h3>
+      <p>בשטח — אוזניות, מבט מרוכז ורגעים אמיתיים שקורים פעם אחת.</p>
+    </div>
+  
+    <div class="frame">
+      <span class="frame-num">04</span>
+      <h3>עריכה</h3>
+      <p>מקצב, מוזיקה ורגש — שם הסיפור מקבל את הנשמה שלו.</p>
+    </div>
+  
+    <div class="frame frame-final">
+      <span class="frame-num">05</span>
+      <h3>הסרט המוגמר</h3>
+      <p>תוצר שמרגיש אחרת, מדויק ואנושי — סיפור שנשאר איתך.</p>
+    </div>
+  </div>
+      <div class="sprockets"><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span><span class="hole"></span></div>
+    </div>
+  </div>
+</section>
 
 
 <section class="about-section section-tint-a reveal" id="about">
