@@ -32,15 +32,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;700;900&family=Rubik:wght@400;500;600;700&family=Suez+One&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper:#2c2238;
-    --card:#362b44;
-    --ink:#f3ebe1;
-    --ink-soft:rgba(243,235,225,.70);
+    --paper:#3d2e58;
+    --card:#4d3a70;
+    --ink:#f5edea;
+    --ink-soft:rgba(245,237,234,.75);
     --accent:#db5c80;
     --accent2:#e8974c;
-    --tint-a:#492731;
-    --tint-b:#563f2e;
-    --line:rgba(243,235,225,.14);
+    --tint-a:#673241;
+    --tint-b:#785136;
+    --line:rgba(245,237,234,.16);
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
@@ -62,7 +62,7 @@
 
   nav.sitenav{
     position:sticky; top:0; z-index:200;
-    background:rgba(44,34,56,.92);
+    background:rgba(20,14,32,.97);
     backdrop-filter:blur(8px);
     border-bottom:1px solid var(--line);
   }
@@ -562,8 +562,8 @@
   table.hours td:first-child{font-weight:700;}
 
   footer{
-    background:#1d1628;
-    color:#f3ebe1;
+    background:#2a1e42;
+    color:#f5edea;
     padding:46px 0 30px;
   }
   footer h2{
@@ -686,6 +686,15 @@
     .gallery{ grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:10px; }
     .media{ height:150px; }
     .wa-float{ width:48px; height:48px; font-size:22px; bottom:16px; left:16px; }
+    /* Prevent WA float from covering last card content */
+    .bento-grid{ padding-bottom:70px; }
+    /* Single column bento on very small screens */
+    .bento-grid{ grid-template-columns:1fr; }
+    /* Stat cards stay 3-col even on mobile */
+    .stats-bar{ grid-template-columns:repeat(3,1fr); gap:8px; }
+    .stat-card{ padding:12px 8px; }
+    .stat-num-display{ font-size:22px; }
+    .stat-label{ font-size:10px; }
   }
 
   /* ============================================================
@@ -694,13 +703,15 @@
   .hero-video-full{
     position:relative; height:100vh; min-height:540px;
     display:flex; align-items:center; justify-content:flex-start;
-    overflow:hidden; background:#080412;
+    overflow:hidden;
+    /* Gradient fallback when video thumbnail doesn't load (local file) */
+    background:linear-gradient(135deg, var(--paper) 0%, color-mix(in srgb,var(--accent) 20%,var(--paper)) 100%);
   }
   .hvb{ position:absolute; inset:0; z-index:0; overflow:hidden; }
   .hvb-thumb{
     position:absolute; inset:0;
     background-size:cover; background-position:center;
-    filter:brightness(.55);
+    filter:brightness(.6);
   }
   .hvb iframe{
     position:absolute; top:50%; left:50%;
@@ -713,21 +724,31 @@
   .hvb iframe.hv-ready{ opacity:.9; }
   .hvo{
     position:absolute; inset:0; z-index:1;
-    /* In RTL, text is on the RIGHT — make right side dark for readability */
     background:linear-gradient(to left,
-      rgba(6,3,14,.94) 0%,
-      rgba(6,3,14,.65) 40%,
-      rgba(6,3,14,.15) 100%
+      rgba(6,3,14,.92) 0%,
+      rgba(6,3,14,.60) 40%,
+      rgba(6,3,14,.10) 100%
     );
   }
+  /* In LTR (EN) mode, flip the gradient */
+  [dir="ltr"] .hvo{
+    background:linear-gradient(to right,
+      rgba(6,3,14,.92) 0%,
+      rgba(6,3,14,.60) 40%,
+      rgba(6,3,14,.10) 100%
+    );
+  }
+  [dir="ltr"] .hero-video-full{ justify-content:flex-start; }
+  [dir="ltr"] .hvc{ text-align:left; }
+  [dir="ltr"] .hvc .cta-row{ justify-content:flex-start; }
   .hvc{
     position:relative; z-index:2;
     max-width:600px; padding:0 clamp(22px,6vw,100px);
     color:#f3ebe1; text-align:right;
   }
   .hvc .eyebrow{ color:var(--accent2); }
-  .hvc .tagline{ color:rgba(243,235,225,.75); font-size:clamp(16px,1.4vw,20px); }
-  /* Stamp badge floats in lower-left of hero, away from text */
+  .hvc .tagline{ color:rgba(243,235,225,.80); font-size:clamp(16px,1.4vw,20px); }
+  /* Stamp badge floats in lower-left of hero */
   .hero-badge-corner{
     position:absolute; bottom:clamp(36px,6vh,70px); left:clamp(36px,5vw,80px);
     z-index:3;
@@ -741,12 +762,19 @@
   @keyframes scrollBounce{ 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(6px);} }
   .hero-scroll-hint::after{ content:'↓'; font-size:18px; }
   @media (max-width:800px){
-    .hero-video-full{ justify-content:center; }
-    .hvo{ background:rgba(6,3,14,.78); }
+    /* Reduce hero height on mobile so it doesn't feel empty without the video */
+    .hero-video-full{
+      height:auto; min-height:0;
+      padding:calc(64px + 10vh) 0 8vh; /* top accounts for sticky nav */
+      justify-content:center;
+    }
+    .hvo{ background:rgba(6,3,14,.80); }
     .hvc{ text-align:center; max-width:none; }
     .hvc .cta-row{ justify-content:center; }
-    /* On mobile, hide corner badge (stamp) to avoid overcrowding */
+    [dir="ltr"] .hvc{ text-align:center; }
+    [dir="ltr"] .hvc .cta-row{ justify-content:center; }
     .hero-badge-corner{ display:none; }
+    .hero-scroll-hint{ display:none; }
   }
 
   /* ============================================================
@@ -945,6 +973,7 @@
   .sec-head{
     position:relative; margin-bottom:40px;
     padding-top:clamp(20px,3vw,36px);
+    overflow:hidden; /* prevents sec-bg-txt from causing horizontal scroll */
   }
   .sec-head.centered{ text-align:center; }
   .sec-bg-txt{
@@ -953,13 +982,31 @@
     font-family:'Rubik',sans-serif; font-weight:900;
     font-size:clamp(38px,7vw,88px);
     letter-spacing:.1em; text-transform:uppercase;
-    color:rgba(243,235,225,.045);
+    color:rgba(245,237,234,.07);
     pointer-events:none; white-space:nowrap;
     user-select:none; z-index:0;
+    max-width:100vw;
   }
   .sec-head h2, .sec-head .title-bar{ position:relative; z-index:1; }
   .sec-head.centered .title-bar{ margin-inline:auto; }
   .sec-head.centered h2{ text-align:center; }
+
+  /* EN mode: left-align all text content */
+  [dir="ltr"] .bento-card h3,
+  [dir="ltr"] .bento-card p { text-align:left; }
+  [dir="ltr"] .bento-cta { align-self:flex-start; }
+  [dir="ltr"] .about-text-col { text-align:left; }
+  [dir="ltr"] .about-text-col p { text-align:left; }
+  [dir="ltr"] .stat-label { text-align:left; }
+  [dir="ltr"] .note p, [dir="ltr"] .note span { text-align:left; }
+  [dir="ltr"] .contact-grid { text-align:left; }
+  [dir="ltr"] .process-clean-step h3,
+  [dir="ltr"] .process-clean-step p { text-align:left; }
+  [dir="ltr"] .hours td { text-align:left; }
+  /* HE mode: ensure all text content is right-aligned */
+  [dir="rtl"] .bento-card h3,
+  [dir="rtl"] .bento-card p { text-align:right; }
+  [dir="rtl"] .bento-cta { align-self:flex-start; } /* flex-start in RTL = visual right */
 
   /* ============================================================
      BENTO CARD IMPROVEMENTS — icon area + CTA button
@@ -1430,12 +1477,19 @@
     if(langBtn) langBtn.textContent = isEn ? 'HE' : 'EN';
     currentLang = lang;
     localStorage.setItem('site-lang', lang);
+
+    // Scroll to top smoothly when switching language
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   if(langBtn){
     langBtn.addEventListener('click', () => applyLang(currentLang === 'he' ? 'en' : 'he'));
   }
-  // Apply saved language on load (skip if Hebrew to avoid flash)
+  // Also wire up the drawer langToggle if it exists
+  document.querySelectorAll('.lang-toggle').forEach(btn => {
+    if(btn !== langBtn) btn.addEventListener('click', () => applyLang(currentLang === 'he' ? 'en' : 'he'));
+  });
+  // Apply saved language on load
   if(currentLang === 'en') applyLang('en');
 
 
