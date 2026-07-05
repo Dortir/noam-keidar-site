@@ -23,7 +23,7 @@
 <meta name="twitter:description" content="סטודיו להפקת סרטים בניהול נועם קידר, מבוסס בירושלים. אנחנו מלווים ארגונים, מוסדות ועסקים משלב הרעיון ועד הסרט המוגמר, עם התמחות בסיפור אנושי, תוכן דוקומנטר">
 
 <!-- === Structured Data (JSON-LD) === -->
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"נועם קידר הפקות","description":"סטודיו להפקת סרטים בניהול נועם קידר, מבוסס בירושלים. אנחנו מלווים ארגונים, מוסדות ועסקים משלב הרעיון ועד הסרט המוגמר, עם התמחות בסיפור אנושי, תוכן דוקומנטרי והפקות שמרגישות אחרת.","address":{"@type":"PostalAddress","addressLocality":"ירושלים, ישראל","addressCountry":"IL"},"url":"https://noam-keidar-site.vercel.app","sameAs":[],"openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":"Sunday","opens":"09:00","closes":"18:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":"Monday","opens":"09:00","closes":"18:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":"Tuesday","opens":"09:00","closes":"18:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":"Wednesday","opens":"09:00","closes":"18:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":"Thursday","opens":"09:00","closes":"18:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":"Friday","opens":"09:00","closes":"13:00"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"LocalBusiness","name":"נועם קידר הפקות","description":"סטודיו להפקת סרטים בניהול נועם קידר, מבוסס בירושלים. אנחנו מלווים ארגונים, מוסדות ועסקים משלב הרעיון ועד הסרט המוגמר, עם התמחות בסיפור אנושי, תוכן דוקומנטרי והפקות שמרגישות אחרת.","address":{"@type":"PostalAddress","addressLocality":"ירושלים, ישראל","addressCountry":"IL"},"url":"https://noam-keidar-site.vercel.app","sameAs":[],"openingHoursSpecification":[]}</script>
 
 <!-- === Vercel Analytics (free, auto-activates on Vercel hosting) === -->
 <script defer src="/_vercel/insights/script.js"></script>
@@ -869,6 +869,7 @@
   }
   .process-clean-step:last-child{ border-right:none; }
   .process-clean-step:hover{ background:var(--tint-a); }
+  .pcn-text{ min-width:0; }
   .pcn{
     display:inline-flex; align-items:center; justify-content:center;
     width:40px; height:40px; border-radius:50%;
@@ -1189,6 +1190,7 @@
     }
     .process-clean-step:last-child{ border-bottom:none; }
     .pcn{ flex-shrink:0; margin-bottom:0; }
+    .pcn-text{ flex:1; min-width:0; }
     .process-clean-step h3{ margin-bottom:4px; }
   }
 
@@ -1349,12 +1351,12 @@
         
       </div>
       <div class="about-text-col">
-        <div class="sec-head centered" style="margin-bottom:16px;">
+        <div class="sec-head centered" style="margin-bottom:0;">
           <span class="sec-bg-txt">WHO WE ARE</span>
           <h2 class="section-title" data-en="About Us" data-he="קצת עלינו">קצת עלינו</h2>
           <div class="title-bar"></div>
         </div>
-        <p style="font-size:16px;line-height:1.75;color:var(--ink-soft);text-align:center;" data-en="A film production studio run by Noam Keidar, based in Jerusalem. Specializing in human storytelling, documentary content and productions that feel truly different." data-he="סטודיו להפקת סרטים בניהול נועם קידר, מבוסס בירושלים. אנחנו מלווים ארגונים, מוסדות ועסקים משלב הרעיון ועד הסרט המוגמר, עם התמחות בסיפור אנושי, תוכן דוקומנטרי והפקות שמרגישות אחרת.">סטודיו להפקת סרטים בניהול נועם קידר, מבוסס בירושלים. אנחנו מלווים ארגונים, מוסדות ועסקים משלב הרעיון ועד הסרט המוגמר, עם התמחות בסיפור אנושי, תוכן דוקומנטרי והפקות שמרגישות אחרת.</p>
+        <p style="margin:0;font-size:16px;line-height:1.75;color:var(--ink-soft);text-align:center;" data-en="A film production studio run by Noam Keidar, based in Jerusalem. Specializing in human storytelling, documentary content and productions that feel truly different." data-he="סטודיו להפקת סרטים בניהול נועם קידר, מבוסס בירושלים. אנחנו מלווים ארגונים, מוסדות ועסקים משלב הרעיון ועד הסרט המוגמר, עם התמחות בסיפור אנושי, תוכן דוקומנטרי והפקות שמרגישות אחרת.">סטודיו להפקת סרטים בניהול נועם קידר, מבוסס בירושלים. אנחנו מלווים ארגונים, מוסדות ועסקים משלב הרעיון ועד הסרט המוגמר, עם התמחות בסיפור אנושי, תוכן דוקומנטרי והפקות שמרגישות אחרת.</p>
         
         <div class="stats-bar">
           <div class="stat-card">
@@ -1452,13 +1454,13 @@
     </div>
     <div class="notes">
     <div class="note" style="--rot:-1.2deg;">
-      <p>עבדנו עם נועם על פרויקט תדמית מורכב והתוצאה הייתה מעבר למצופה - מקצועי, רגיש ומדויק.</p>
-      <span>— שלמה אברהמי</span>
+      <p data-en="We worked with Noam on a complex branding project and the result exceeded expectations — professional, sensitive and precise." data-he="עבדנו עם נועם על פרויקט תדמית מורכב והתוצאה הייתה מעבר למצופה - מקצועי, רגיש ומדויק.">עבדנו עם נועם על פרויקט תדמית מורכב והתוצאה הייתה מעבר למצופה - מקצועי, רגיש ומדויק.</p>
+      <span data-en="— Shlomo Avrahami" data-he="— שלמה אברהמי">— שלמה אברהמי</span>
     </div>
   
     <div class="note" style="--rot:1.2deg;">
-      <p>נועם מבין סיפור אנושי ומצליח להעביר אותו למסך בצורה שנשארת איתך.</p>
-      <span>— שרה בק, מיזם חכימא</span>
+      <p data-en="Noam understands human stories and knows how to bring them to the screen in a way that stays with you." data-he="נועם מבין סיפור אנושי ומצליח להעביר אותו למסך בצורה שנשארת איתך.">נועם מבין סיפור אנושי ומצליח להעביר אותו למסך בצורה שנשארת איתך.</p>
+      <span data-en="— Sara Bak, Hachima Project" data-he="— שרה בק, מיזם חכימא">— שרה בק, מיזם חכימא</span>
     </div>
   </div>
   </div>
@@ -1487,32 +1489,42 @@
     <div class="process-clean-grid">
     <div class="process-clean-step">
       <div class="pcn">01</div>
-      <h3>רעיון</h3>
-      <p>שיחה ראשונה, הבנת הצורך.</p>
+      <div class="pcn-text">
+        <h3 data-en="Concept" data-he="רעיון">רעיון</h3>
+        <p data-en="First conversation, understanding the need." data-he="שיחה ראשונה, הבנת הצורך.">שיחה ראשונה, הבנת הצורך.</p>
+      </div>
     </div>
   
     <div class="process-clean-step">
       <div class="pcn">02</div>
-      <h3>תחקיר</h3>
-      <p>מחקר, מקורות, מבנה הסיפור.</p>
+      <div class="pcn-text">
+        <h3 data-en="Research" data-he="תחקיר">תחקיר</h3>
+        <p data-en="Research, sources, shaping the story." data-he="מחקר, מקורות, מבנה הסיפור.">מחקר, מקורות, מבנה הסיפור.</p>
+      </div>
     </div>
   
     <div class="process-clean-step">
       <div class="pcn">03</div>
-      <h3>צילום</h3>
-      <p>בשטח, מבט מרוכז, רגעים אמיתיים.</p>
+      <div class="pcn-text">
+        <h3 data-en="Filming" data-he="צילום">צילום</h3>
+        <p data-en="On location, a focused eye, real moments." data-he="בשטח, מבט מרוכז, רגעים אמיתיים.">בשטח, מבט מרוכז, רגעים אמיתיים.</p>
+      </div>
     </div>
   
     <div class="process-clean-step">
       <div class="pcn">04</div>
-      <h3>עריכה</h3>
-      <p>מקצב, מוזיקה, הנשמה של הסרט.</p>
+      <div class="pcn-text">
+        <h3 data-en="Editing" data-he="עריכה">עריכה</h3>
+        <p data-en="Pace, music, the breath of the film." data-he="מקצב, מוזיקה, הנשמה של הסרט.">מקצב, מוזיקה, הנשמה של הסרט.</p>
+      </div>
     </div>
   
     <div class="process-clean-step">
       <div class="pcn">05</div>
-      <h3>מוצר מוגמר</h3>
-      <p>תוצר שמרגיש אחרת. תמיד.</p>
+      <div class="pcn-text">
+        <h3 data-en="Final Product" data-he="מוצר מוגמר">מוצר מוגמר</h3>
+        <p data-en="A result that feels different. Always." data-he="תוצר שמרגיש אחרת. תמיד.">תוצר שמרגיש אחרת. תמיד.</p>
+      </div>
     </div>
   </div>
   </div>
@@ -1535,7 +1547,7 @@
         <div class="form-row">
           <div class="form-group">
             <label data-en="Full Name" data-he="שם מלא">שם מלא</label>
-            <input type="text" name="name" required placeholder="השם שלכם">
+            <input type="text" name="name" required placeholder="השם שלכם" data-placeholder-en="Your name" data-placeholder-he="השם שלכם">
           </div>
           <div class="form-group">
             <label data-en="Email" data-he="אימייל">אימייל</label>
@@ -1548,7 +1560,7 @@
         </div>
         <div class="form-group">
           <label data-en="Tell us about your project" data-he="ספרו לנו על הפרויקט">ספרו לנו על הפרויקט</label>
-          <textarea name="message" rows="5" required placeholder="מה הרעיון שלכם? על מה תרצו לדבר?"></textarea>
+          <textarea name="message" rows="5" required placeholder="מה הרעיון שלכם? על מה תרצו לדבר?" data-placeholder-en="What's your idea? What would you like to discuss?" data-placeholder-he="מה הרעיון שלכם? על מה תרצו לדבר?"></textarea>
         </div>
         <div style="text-align:center;">
           <button type="submit" class="btn btn-fill contact-submit" data-en="Send Message →" data-he="שלחו הודעה ←">שלחו הודעה ←</button>
@@ -1634,7 +1646,7 @@
 
 <script>
   // live open/closed status, computed in the visitor's browser
-  const hours = [{"day":"ראשון","open":"09:00","close":"18:00","closed":false},{"day":"שני","open":"09:00","close":"18:00","closed":false},{"day":"שלישי","open":"09:00","close":"18:00","closed":false},{"day":"רביעי","open":"09:00","close":"18:00","closed":false},{"day":"חמישי","open":"09:00","close":"18:00","closed":false},{"day":"שישי","open":"09:00","close":"13:00","closed":false},{"day":"שבת","open":"00:00","close":"00:00","closed":true}];
+  const hours = [];
   function update(){
     const now = new Date();
     const todayIdx = now.getDay(); // 0=Sunday
@@ -1703,6 +1715,13 @@
       el.textContent = isEn
         ? (el.dataset.en || el.dataset.he)
         : (el.dataset.he || el.textContent);
+    });
+
+    // Swap form field placeholders
+    document.querySelectorAll('[data-placeholder-en]').forEach(el => {
+      el.setAttribute('placeholder', isEn
+        ? (el.dataset.placeholderEn || el.getAttribute('placeholder'))
+        : (el.dataset.placeholderHe || el.getAttribute('placeholder')));
     });
 
     // Nav links (anchor text)
