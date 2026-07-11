@@ -725,7 +725,9 @@
   }
   .hvb iframe{
     position:absolute; top:50%; left:50%;
-    transform:translate(-50%,-50%);
+    /* scale() crops the video edges so the faded in-video logo
+       watermark stays outside the visible frame */
+    transform:translate(-50%,-50%) scale(1.25);
     width:calc(max(100vw, calc(100vh * 1.78)));
     height:calc(max(100vh, calc(100vw * .5625)));
     pointer-events:none; border:0;
@@ -933,6 +935,13 @@
   }
   /* Circular stamp logo replaces the old clapperboard icon */
   .nav-logo-circular{ flex-shrink:0; }
+  .nav-logo-img{
+    height:46px; width:auto; max-width:190px; display:block;
+    object-fit:contain; flex-shrink:0;
+    /* If the original logo is dark and invisible on the dark nav,
+       uncomment the next line to render it in white: */
+    /* filter:brightness(0) invert(1); */
+  }
   .nav-logo-icon{ width:36px; height:36px; color:var(--accent); flex-shrink:0; }
   .nav-logo-text{ display:flex; flex-direction:column; line-height:1.2; }
   .nl-name{
@@ -1308,27 +1317,9 @@
   <div class="nav-wrap">
     <!-- Logo (RTL: right side = DOM first child) -->
     <a href="#top" class="nav-logo-link">
-      <!-- Circular stamp logo — matches Noam Keidar's branding -->
-      <svg class="nav-logo-circular" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:52px;height:52px;flex-shrink:0;">
-        <circle cx="48" cy="48" r="44" stroke="var(--accent)" stroke-width="2.5"/>
-        <circle cx="48" cy="48" r="37" stroke="var(--accent)" stroke-width="1" stroke-dasharray="2 3"/>
-        <!-- Film clapperboard in center -->
-        <rect x="30" y="40" width="36" height="22" rx="2.5" stroke="var(--accent)" stroke-width="1.6" fill="none"/>
-        <path d="M30 47h36" stroke="var(--accent)" stroke-width="1.3"/>
-        <path d="M36 40l-3-5M43 40l-3-5M50 40l-3-5M57 40l-3-5" stroke="var(--accent)" stroke-width="1.4" stroke-linecap="round"/>
-        <!-- Text on circles -->
-        <defs>
-          <path id="nkTopArc" d="M 11,48 A 37,37 0 0,1 85,48"/>
-          <path id="nkBotArc" d="M 13,53 A 37,37 0 0,0 83,53"/>
-        </defs>
-        <text fill="var(--accent)" font-size="9.5" font-weight="700" letter-spacing="2">
-          <textPath href="#nkTopArc" startOffset="50%" text-anchor="middle" font-family="Cormorant Garamond,serif">NOAM KEIDAR</textPath>
-        </text>
-        <text fill="var(--accent)" font-size="8.5" font-weight="700" letter-spacing="2">
-          <textPath href="#nkBotArc" startOffset="50%" text-anchor="middle" font-family="Cormorant Garamond,serif">PRODUCTIONS</textPath>
-        </text>
-      </svg>
-      <div class="nav-logo-text">
+      <img class="nav-logo-img" src="https://static.wixstatic.com/media/d9b214_f833fb2d658848c9a906771626581267~mv2.png/v1/fit/w_500,h_266,al_c/d9b214_f833fb2d658848c9a906771626581267~mv2.png" alt="נועם קידר הפקות"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+      <div class="nav-logo-text" style="display:none;">
         <span class="nl-name" data-en="Noam Keidar Productions">נועם קידר הפקות</span>
         <span class="nl-sub" data-en="PRODUCTIONS">הפקות</span>
       </div>
@@ -1423,9 +1414,9 @@
       <h2 class="section-title" data-en="Portfolio" data-he="תיק העבודות">תיק העבודות</h2>
       <div class="title-bar"></div>
     </div>
-    <div class="gallery gallery-initial"><button type="button" class="media video" onclick="openVideoModal('prS_-I7vi_8','שואוריל','נועם קידר הפקות','סיפור בצורה שמרגישה אחרת — שואוריל נועם קידר הפקות.')" aria-label="שואוריל"><img src="https://i.ytimg.com/vi/prS_-I7vi_8/mqdefault.jpg" alt="שואוריל" loading="lazy" onerror="this.style.display='none'"><span class="video-title">שואוריל</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('49ccTtgcFrI','תולדות אחרית הימים','ערוץ מאיר / YES','סרט תיעודי על אחרית הימים מנקודת מבט יהודית, שודר בערוץ מאיר.')" aria-label="תולדות אחרית הימים"><img src="https://i.ytimg.com/vi/49ccTtgcFrI/mqdefault.jpg" alt="תולדות אחרית הימים" loading="lazy" onerror="this.style.display='none'"><span class="video-title">תולדות אחרית הימים</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('DAHJ0mGFJ3A','מסע כומתה','ערוץ מאיר לילדים','הפרק הראשון בתוכנית הטיולים של ערוץ מאיר לילדים.')" aria-label="מסע כומתה"><img src="https://i.ytimg.com/vi/DAHJ0mGFJ3A/mqdefault.jpg" alt="מסע כומתה" loading="lazy" onerror="this.style.display='none'"><span class="video-title">מסע כומתה</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('ej6Rh4bMVcA','הכנסת ספר תורה','ישיבת מעלה אליהו','בהשתתפות נשיא המדינה, לעילוי נשמת סרן לירון שניר הי&quot;ד.')" aria-label="הכנסת ספר תורה"><img src="https://i.ytimg.com/vi/ej6Rh4bMVcA/mqdefault.jpg" alt="הכנסת ספר תורה" loading="lazy" onerror="this.style.display='none'"><span class="video-title">הכנסת ספר תורה</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('zRF90lljf08','בית בטוח - מועצה גוש עציון','מועצה אזורית גוש עציון','פרויקט בית בטוח לגיל השלישי בגוש עציון.')" aria-label="בית בטוח - מועצה גוש עציון"><img src="https://i.ytimg.com/vi/zRF90lljf08/mqdefault.jpg" alt="בית בטוח - מועצה גוש עציון" loading="lazy" onerror="this.style.display='none'"><span class="video-title">בית בטוח - מועצה גוש עציון</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('BvO336MBojE','סיירת סבתא','חמדיגיטלי','מיזם ייחודי שמחבר בין דורות דרך טכנולוגיה.')" aria-label="סיירת סבתא"><img src="https://i.ytimg.com/vi/BvO336MBojE/mqdefault.jpg" alt="סיירת סבתא" loading="lazy" onerror="this.style.display='none'"><span class="video-title">סיירת סבתא</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('5bU8EBTee4c','טריילר משכן התכלת','פרויקט נדלן','טריילר קולנועי לפרויקט מגורים יוקרתי.')" aria-label="טריילר משכן התכלת"><img src="https://i.ytimg.com/vi/5bU8EBTee4c/mqdefault.jpg" alt="טריילר משכן התכלת" loading="lazy" onerror="this.style.display='none'"><span class="video-title">טריילר משכן התכלת</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('pu0wQCDxrIQ','פאר תחת אפר','יום גוש קטיף','קדימון — יום גוש קטיף במערכת החינוך.')" aria-label="פאר תחת אפר"><img src="https://i.ytimg.com/vi/pu0wQCDxrIQ/mqdefault.jpg" alt="פאר תחת אפר" loading="lazy" onerror="this.style.display='none'"><span class="video-title">פאר תחת אפר</span><span class="play">▶</span></button></div>
+    <div class="gallery gallery-initial"><button type="button" class="media video" onclick="openVideoModal('prS_-I7vi_8','שואוריל','נועם קידר הפקות','סיפור בצורה שמרגישה אחרת — שואוריל נועם קידר הפקות.')" aria-label="שואוריל"><img src="https://i.ytimg.com/vi/prS_-I7vi_8/mqdefault.jpg" alt="שואוריל" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="Showreel" data-he="שואוריל">שואוריל</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('49ccTtgcFrI','תולדות אחרית הימים','ערוץ מאיר / YES','סרט תיעודי על אחרית הימים מנקודת מבט יהודית, שודר בערוץ מאיר.')" aria-label="תולדות אחרית הימים"><img src="https://i.ytimg.com/vi/49ccTtgcFrI/mqdefault.jpg" alt="תולדות אחרית הימים" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="The End of Days" data-he="תולדות אחרית הימים">תולדות אחרית הימים</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('DAHJ0mGFJ3A','מסע כומתה','ערוץ מאיר לילדים','הפרק הראשון בתוכנית הטיולים של ערוץ מאיר לילדים.')" aria-label="מסע כומתה"><img src="https://i.ytimg.com/vi/DAHJ0mGFJ3A/mqdefault.jpg" alt="מסע כומתה" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="Beret March" data-he="מסע כומתה">מסע כומתה</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('ej6Rh4bMVcA','הכנסת ספר תורה','ישיבת מעלה אליהו','בהשתתפות נשיא המדינה, לעילוי נשמת סרן לירון שניר הי&quot;ד.')" aria-label="הכנסת ספר תורה"><img src="https://i.ytimg.com/vi/ej6Rh4bMVcA/mqdefault.jpg" alt="הכנסת ספר תורה" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="Torah Scroll Dedication" data-he="הכנסת ספר תורה">הכנסת ספר תורה</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('zRF90lljf08','בית בטוח - מועצה גוש עציון','מועצה אזורית גוש עציון','פרויקט בית בטוח לגיל השלישי בגוש עציון.')" aria-label="בית בטוח - מועצה גוש עציון"><img src="https://i.ytimg.com/vi/zRF90lljf08/mqdefault.jpg" alt="בית בטוח - מועצה גוש עציון" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="Safe Home — Gush Etzion" data-he="בית בטוח - מועצה גוש עציון">בית בטוח - מועצה גוש עציון</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('BvO336MBojE','סיירת סבתא','חמדיגיטלי','מיזם ייחודי שמחבר בין דורות דרך טכנולוגיה.')" aria-label="סיירת סבתא"><img src="https://i.ytimg.com/vi/BvO336MBojE/mqdefault.jpg" alt="סיירת סבתא" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="Grandma Patrol" data-he="סיירת סבתא">סיירת סבתא</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('5bU8EBTee4c','טריילר משכן התכלת','פרויקט נדלן','טריילר קולנועי לפרויקט מגורים יוקרתי.')" aria-label="טריילר משכן התכלת"><img src="https://i.ytimg.com/vi/5bU8EBTee4c/mqdefault.jpg" alt="טריילר משכן התכלת" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="Mishkan HaTchelet Trailer" data-he="טריילר משכן התכלת">טריילר משכן התכלת</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('pu0wQCDxrIQ','פאר תחת אפר','יום גוש קטיף','קדימון — יום גוש קטיף במערכת החינוך.')" aria-label="פאר תחת אפר"><img src="https://i.ytimg.com/vi/pu0wQCDxrIQ/mqdefault.jpg" alt="פאר תחת אפר" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="Beauty for Ashes" data-he="פאר תחת אפר">פאר תחת אפר</span><span class="play">▶</span></button></div>
     
-    <div class="gallery gallery-more" id="galleryMore" style="display:none;margin-top:14px;"><button type="button" class="media video" onclick="openVideoModal('LWWShMpu7Kk','מצות לכולם','מיזם חכימא','סרטון חינוכי על נגישות מצות לכולם.')" aria-label="מצות לכולם"><img src="https://i.ytimg.com/vi/LWWShMpu7Kk/mqdefault.jpg" alt="מצות לכולם" loading="lazy" onerror="this.style.display='none'"><span class="video-title">מצות לכולם</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('qZZ8Hao2wCg','החידא','מיזם חכימא','דוקומנטרי על הרב חיד&quot;א — מגדולי הפוסקים.')" aria-label="החידא"><img src="https://i.ytimg.com/vi/qZZ8Hao2wCg/mqdefault.jpg" alt="החידא" loading="lazy" onerror="this.style.display='none'"><span class="video-title">החידא</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('OyQZo7ME7Cg','ברית גרר','מרכז קטיף','על הברית של אברהם עם אבימלך — בימוי, צילום ועריכה: נועם קידר.')" aria-label="ברית גרר"><img src="https://i.ytimg.com/vi/OyQZo7ME7Cg/mqdefault.jpg" alt="ברית גרר" loading="lazy" onerror="this.style.display='none'"><span class="video-title">ברית גרר</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('trhH_K3chsQ','להתענג בתענוגים','הרכב מוזיקלי','קליפ מוזיקלי לפיוט שבת. צילום ועריכה: נועם קידר.')" aria-label="להתענג בתענוגים"><img src="https://i.ytimg.com/vi/trhH_K3chsQ/mqdefault.jpg" alt="להתענג בתענוגים" loading="lazy" onerror="this.style.display='none'"><span class="video-title">להתענג בתענוגים</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('L_ByHcHSa-M','סיירת סבתא - ראש חודש שבט','חמדיגיטלי','פרק נוסף בסדרת סיירת סבתא.')" aria-label="סיירת סבתא - ראש חודש שבט"><img src="https://i.ytimg.com/vi/L_ByHcHSa-M/mqdefault.jpg" alt="סיירת סבתא - ראש חודש שבט" loading="lazy" onerror="this.style.display='none'"><span class="video-title">סיירת סבתא - ראש חודש שבט</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('2sk7sWt9m1Q','בירה במדבר','פסטיבל תקוע','פסטיבל הבירה בתקוע — אוירה, מוזיקה ואנשים יפים.')" aria-label="בירה במדבר"><img src="https://i.ytimg.com/vi/2sk7sWt9m1Q/mqdefault.jpg" alt="בירה במדבר" loading="lazy" onerror="this.style.display='none'"><span class="video-title">בירה במדבר</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('5LaHv7NhCNI','מלון ליטוב בכותל','רשת מלונות ליטוב','סרטון תדמית למלון ליטוב בכותל.')" aria-label="מלון ליטוב בכותל"><img src="https://i.ytimg.com/vi/5LaHv7NhCNI/mqdefault.jpg" alt="מלון ליטוב בכותל" loading="lazy" onerror="this.style.display='none'"><span class="video-title">מלון ליטוב בכותל</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('OWIVimyfWDg','מרכז מבקרים תפילין בית אל','תפילין בית אל','חוויה ערכית ומרגשת לכל המשפחה.')" aria-label="מרכז מבקרים תפילין בית אל"><img src="https://i.ytimg.com/vi/OWIVimyfWDg/mqdefault.jpg" alt="מרכז מבקרים תפילין בית אל" loading="lazy" onerror="this.style.display='none'"><span class="video-title">מרכז מבקרים תפילין בית אל</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('0u_-1hICSeM','שיר תודה','יהודה כץ והמעגל','קליפ מוזיקלי רשמי לאמן יהודה כץ.')" aria-label="שיר תודה"><img src="https://i.ytimg.com/vi/0u_-1hICSeM/mqdefault.jpg" alt="שיר תודה" loading="lazy" onerror="this.style.display='none'"><span class="video-title">שיר תודה</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('6l4F7y_OuCM','אבא ליום אחד - פייטן','תוכנית טלוויזיה','פרק מסדרת הטלוויזיה אבא ליום אחד.')" aria-label="אבא ליום אחד - פייטן"><img src="https://i.ytimg.com/vi/6l4F7y_OuCM/mqdefault.jpg" alt="אבא ליום אחד - פייטן" loading="lazy" onerror="this.style.display='none'"><span class="video-title">אבא ליום אחד - פייטן</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('yEyr9zd6RuA','אבא ליום אחד - מצנחי רחיפה','תוכנית טלוויזיה','הרפתקה של מצנחי רחיפה מעל הגלבוע.')" aria-label="אבא ליום אחד - מצנחי רחיפה"><img src="https://i.ytimg.com/vi/yEyr9zd6RuA/mqdefault.jpg" alt="אבא ליום אחד - מצנחי רחיפה" loading="lazy" onerror="this.style.display='none'"><span class="video-title">אבא ליום אחד - מצנחי רחיפה</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('XAMvytyOhVM','הודו לשם - טריילר','מעלה VOD','טריילר — התמודדות זוגית בצל שליחות.')" aria-label="הודו לשם - טריילר"><img src="https://i.ytimg.com/vi/XAMvytyOhVM/mqdefault.jpg" alt="הודו לשם - טריילר" loading="lazy" onerror="this.style.display='none'"><span class="video-title">הודו לשם - טריילר</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('9AO3BpwUxBU','גלאט שפיל - מאחורי הקלעים','גלאט שפיל','תיעוד מאחורי הקלעים של הופעה חסידית.')" aria-label="גלאט שפיל - מאחורי הקלעים"><img src="https://i.ytimg.com/vi/9AO3BpwUxBU/mqdefault.jpg" alt="גלאט שפיל - מאחורי הקלעים" loading="lazy" onerror="this.style.display='none'"><span class="video-title">גלאט שפיל - מאחורי הקלעים</span><span class="play">▶</span></button></div>
+    <div class="gallery gallery-more" id="galleryMore" style="display:none;margin-top:14px;"><button type="button" class="media video" onclick="openVideoModal('LWWShMpu7Kk','מצות לכולם','מיזם חכימא','סרטון חינוכי על נגישות מצות לכולם.')" aria-label="מצות לכולם"><img src="https://i.ytimg.com/vi/LWWShMpu7Kk/mqdefault.jpg" alt="מצות לכולם" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="Matzot for All" data-he="מצות לכולם">מצות לכולם</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('qZZ8Hao2wCg','החידא','מיזם חכימא','דוקומנטרי על הרב חיד&quot;א — מגדולי הפוסקים.')" aria-label="החידא"><img src="https://i.ytimg.com/vi/qZZ8Hao2wCg/mqdefault.jpg" alt="החידא" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="The Chida" data-he="החידא">החידא</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('OyQZo7ME7Cg','ברית גרר','מרכז קטיף','על הברית של אברהם עם אבימלך — בימוי, צילום ועריכה: נועם קידר.')" aria-label="ברית גרר"><img src="https://i.ytimg.com/vi/OyQZo7ME7Cg/mqdefault.jpg" alt="ברית גרר" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="The Covenant of Gerar" data-he="ברית גרר">ברית גרר</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('trhH_K3chsQ','להתענג בתענוגים','הרכב מוזיקלי','קליפ מוזיקלי לפיוט שבת. צילום ועריכה: נועם קידר.')" aria-label="להתענג בתענוגים"><img src="https://i.ytimg.com/vi/trhH_K3chsQ/mqdefault.jpg" alt="להתענג בתענוגים" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="LeHitaneg BeTaanugim" data-he="להתענג בתענוגים">להתענג בתענוגים</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('L_ByHcHSa-M','סיירת סבתא - ראש חודש שבט','חמדיגיטלי','פרק נוסף בסדרת סיירת סבתא.')" aria-label="סיירת סבתא - ראש חודש שבט"><img src="https://i.ytimg.com/vi/L_ByHcHSa-M/mqdefault.jpg" alt="סיירת סבתא - ראש חודש שבט" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="Grandma Patrol — Shvat" data-he="סיירת סבתא - ראש חודש שבט">סיירת סבתא - ראש חודש שבט</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('2sk7sWt9m1Q','בירה במדבר','פסטיבל תקוע','פסטיבל הבירה בתקוע — אוירה, מוזיקה ואנשים יפים.')" aria-label="בירה במדבר"><img src="https://i.ytimg.com/vi/2sk7sWt9m1Q/mqdefault.jpg" alt="בירה במדבר" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="Beer in the Desert" data-he="בירה במדבר">בירה במדבר</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('5LaHv7NhCNI','מלון ליטוב בכותל','רשת מלונות ליטוב','סרטון תדמית למלון ליטוב בכותל.')" aria-label="מלון ליטוב בכותל"><img src="https://i.ytimg.com/vi/5LaHv7NhCNI/mqdefault.jpg" alt="מלון ליטוב בכותל" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="Litov Hotel at the Kotel" data-he="מלון ליטוב בכותל">מלון ליטוב בכותל</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('OWIVimyfWDg','מרכז מבקרים תפילין בית אל','תפילין בית אל','חוויה ערכית ומרגשת לכל המשפחה.')" aria-label="מרכז מבקרים תפילין בית אל"><img src="https://i.ytimg.com/vi/OWIVimyfWDg/mqdefault.jpg" alt="מרכז מבקרים תפילין בית אל" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="Tefillin Beit El Visitor Center" data-he="מרכז מבקרים תפילין בית אל">מרכז מבקרים תפילין בית אל</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('0u_-1hICSeM','שיר תודה','יהודה כץ והמעגל','קליפ מוזיקלי רשמי לאמן יהודה כץ.')" aria-label="שיר תודה"><img src="https://i.ytimg.com/vi/0u_-1hICSeM/mqdefault.jpg" alt="שיר תודה" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="A Song of Thanks" data-he="שיר תודה">שיר תודה</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('6l4F7y_OuCM','אבא ליום אחד - פייטן','תוכנית טלוויזיה','פרק מסדרת הטלוויזיה אבא ליום אחד.')" aria-label="אבא ליום אחד - פייטן"><img src="https://i.ytimg.com/vi/6l4F7y_OuCM/mqdefault.jpg" alt="אבא ליום אחד - פייטן" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="Dad for a Day — Paytan" data-he="אבא ליום אחד - פייטן">אבא ליום אחד - פייטן</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('yEyr9zd6RuA','אבא ליום אחד - מצנחי רחיפה','תוכנית טלוויזיה','הרפתקה של מצנחי רחיפה מעל הגלבוע.')" aria-label="אבא ליום אחד - מצנחי רחיפה"><img src="https://i.ytimg.com/vi/yEyr9zd6RuA/mqdefault.jpg" alt="אבא ליום אחד - מצנחי רחיפה" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="Dad for a Day — Paragliding" data-he="אבא ליום אחד - מצנחי רחיפה">אבא ליום אחד - מצנחי רחיפה</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('XAMvytyOhVM','הודו לשם - טריילר','מעלה VOD','טריילר — התמודדות זוגית בצל שליחות.')" aria-label="הודו לשם - טריילר"><img src="https://i.ytimg.com/vi/XAMvytyOhVM/mqdefault.jpg" alt="הודו לשם - טריילר" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="Your Sweet Light — Trailer" data-he="הודו לשם - טריילר">הודו לשם - טריילר</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('9AO3BpwUxBU','גלאט שפיל - מאחורי הקלעים','גלאט שפיל','תיעוד מאחורי הקלעים של הופעה חסידית.')" aria-label="גלאט שפיל - מאחורי הקלעים"><img src="https://i.ytimg.com/vi/9AO3BpwUxBU/mqdefault.jpg" alt="גלאט שפיל - מאחורי הקלעים" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="Glat Spiel — Behind the Scenes" data-he="גלאט שפיל - מאחורי הקלעים">גלאט שפיל - מאחורי הקלעים</span><span class="play">▶</span></button></div>
     <div class="load-more-wrap">
       <button class="load-more-btn" id="loadMoreBtn"
         data-en="Show More (13)"
@@ -1492,13 +1483,13 @@
     </div>
     <div class="notes">
     <div class="note" style="--rot:-1.2deg;">
-      <p>עבדנו עם נועם על פרויקט תדמית מורכב והתוצאה הייתה מעבר למצופה - מקצועי, רגיש ומדויק.</p>
-      <span>— שלמה אברהמי</span>
+      <p data-en="We worked with Noam on a complex brand film and the result exceeded expectations — professional, sensitive and precise." data-he="עבדנו עם נועם על פרויקט תדמית מורכב והתוצאה הייתה מעבר למצופה - מקצועי, רגיש ומדויק.">עבדנו עם נועם על פרויקט תדמית מורכב והתוצאה הייתה מעבר למצופה - מקצועי, רגיש ומדויק.</p>
+      <span data-en="— Shlomo Avrahami" data-he="— שלמה אברהמי">— שלמה אברהמי</span>
     </div>
   
     <div class="note" style="--rot:1.2deg;">
-      <p>נועם מבין סיפור אנושי ומצליח להעביר אותו למסך בצורה שנשארת איתך.</p>
-      <span>— שרה בק, מיזם חכימא</span>
+      <p data-en="Noam understands a human story and brings it to the screen in a way that stays with you." data-he="נועם מבין סיפור אנושי ומצליח להעביר אותו למסך בצורה שנשארת איתך.">נועם מבין סיפור אנושי ומצליח להעביר אותו למסך בצורה שנשארת איתך.</p>
+      <span data-en="— Sara Bak, Hachima Initiative" data-he="— שרה בק, מיזם חכימא">— שרה בק, מיזם חכימא</span>
     </div>
   </div>
   </div>
@@ -1512,7 +1503,7 @@
       <h2 class="section-title" data-en="Clients Recommend" data-he="לקוחות ממליצים">לקוחות ממליצים</h2>
       <div class="title-bar"></div>
     </div>
-    <div class="gallery gallery-centered"><button type="button" class="media video" onclick="openVideoModal('TGkHbhhvJRk','שלמה אברהמי','לקוח','עבדנו עם נועם על פרויקט תדמית מורכב.')" aria-label="שלמה אברהמי"><img src="https://i.ytimg.com/vi/TGkHbhhvJRk/mqdefault.jpg" alt="שלמה אברהמי" loading="lazy" onerror="this.style.display='none'"><span class="video-title">שלמה אברהמי</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('ehiqPIh_Hpw','אריק ורצבורגר','לקוח','')" aria-label="אריק ורצבורגר"><img src="https://i.ytimg.com/vi/ehiqPIh_Hpw/mqdefault.jpg" alt="אריק ורצבורגר" loading="lazy" onerror="this.style.display='none'"><span class="video-title">אריק ורצבורגר</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('bef3GOej2mw','שרה בק','מיזם חכימא','נועם מבין סיפור אנושי.')" aria-label="שרה בק"><img src="https://i.ytimg.com/vi/bef3GOej2mw/mqdefault.jpg" alt="שרה בק" loading="lazy" onerror="this.style.display='none'"><span class="video-title">שרה בק</span><span class="play">▶</span></button></div>
+    <div class="gallery gallery-centered"><button type="button" class="media video" onclick="openVideoModal('TGkHbhhvJRk','שלמה אברהמי','לקוח','עבדנו עם נועם על פרויקט תדמית מורכב.')" aria-label="שלמה אברהמי"><img src="https://i.ytimg.com/vi/TGkHbhhvJRk/mqdefault.jpg" alt="שלמה אברהמי" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="Shlomo Avrahami" data-he="שלמה אברהמי">שלמה אברהמי</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('ehiqPIh_Hpw','אריק ורצבורגר','לקוח','')" aria-label="אריק ורצבורגר"><img src="https://i.ytimg.com/vi/ehiqPIh_Hpw/mqdefault.jpg" alt="אריק ורצבורגר" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="Arik Wurzburger" data-he="אריק ורצבורגר">אריק ורצבורגר</span><span class="play">▶</span></button><button type="button" class="media video" onclick="openVideoModal('bef3GOej2mw','שרה בק','מיזם חכימא','נועם מבין סיפור אנושי.')" aria-label="שרה בק"><img src="https://i.ytimg.com/vi/bef3GOej2mw/mqdefault.jpg" alt="שרה בק" loading="lazy" onerror="this.style.display='none'"><span class="video-title" data-en="Sara Bak" data-he="שרה בק">שרה בק</span><span class="play">▶</span></button></div>
   </div>
 </section>
 
@@ -1527,32 +1518,32 @@
     <div class="process-clean-grid">
     <div class="process-clean-step">
       <div class="pcn">01</div>
-      <h3>רעיון</h3>
-      <p>שיחה ראשונה, הבנת הצורך.</p>
+      <h3 data-en="Concept" data-he="רעיון">רעיון</h3>
+      <p data-en="First conversation, understanding the need." data-he="שיחה ראשונה, הבנת הצורך.">שיחה ראשונה, הבנת הצורך.</p>
     </div>
   
     <div class="process-clean-step">
       <div class="pcn">02</div>
-      <h3>תחקיר ותסריט</h3>
-      <p>מחקר, מקורות, תסריט ומבנה הסיפור.</p>
+      <h3 data-en="Research &amp; Script" data-he="תחקיר ותסריט">תחקיר ותסריט</h3>
+      <p data-en="Research, sources, script and story structure." data-he="מחקר, מקורות, תסריט ומבנה הסיפור.">מחקר, מקורות, תסריט ומבנה הסיפור.</p>
     </div>
   
     <div class="process-clean-step">
       <div class="pcn">03</div>
-      <h3>צילום</h3>
-      <p>בשטח, מבט מרוכז, רגעים אמיתיים.</p>
+      <h3 data-en="Filming" data-he="צילום">צילום</h3>
+      <p data-en="On location, a focused eye, real moments." data-he="בשטח, מבט מרוכז, רגעים אמיתיים.">בשטח, מבט מרוכז, רגעים אמיתיים.</p>
     </div>
   
     <div class="process-clean-step">
       <div class="pcn">04</div>
-      <h3>עריכה</h3>
-      <p>מקצב, מוזיקה, הנשמה של הסרט.</p>
+      <h3 data-en="Editing" data-he="עריכה">עריכה</h3>
+      <p data-en="Rhythm, music — the soul of the film." data-he="מקצב, מוזיקה, הנשמה של הסרט.">מקצב, מוזיקה, הנשמה של הסרט.</p>
     </div>
   
     <div class="process-clean-step">
       <div class="pcn">05</div>
-      <h3>מוצר מוגמר</h3>
-      <p>תוצר שמרגיש אחרת. תמיד.</p>
+      <h3 data-en="Final Product" data-he="מוצר מוגמר">מוצר מוגמר</h3>
+      <p data-en="A result that feels different. Always." data-he="תוצר שמרגיש אחרת. תמיד.">תוצר שמרגיש אחרת. תמיד.</p>
     </div>
   </div>
   </div>
@@ -1578,7 +1569,7 @@
               data-he="מאז אותו יום, אני חי ונושם את עולם הקולנוע, הטלוויזיה והתוכן הדיגיטלי. עבדתי כמנהל הפקה ומפיק בכיר בתוכניות פריים-טיים ודרמה, ובמקביל כצלם בעולם המתפתח של התוכן הדיגיטלי. לאחר מכן נסעתי להודו ויצרתי את הסרט הדוקומנטרי הראשון שלי כבמאי.">מאז אותו יום, אני חי ונושם את עולם הקולנוע, הטלוויזיה והתוכן הדיגיטלי. עבדתי כמנהל הפקה ומפיק בכיר בתוכניות פריים-טיים ודרמה, ובמקביל כצלם בעולם המתפתח של התוכן הדיגיטלי. לאחר מכן נסעתי להודו ויצרתי את הסרט הדוקומנטרי הראשון שלי כבמאי.</p><p data-en="When I came back, I dedicated myself to learning from the best — at the Ma'aleh School of Film and Television. Since graduating, I have been directing, filming, producing and editing documentary films, fiction films, digital content, corporate videos, children's TV series, visitor center movies and more."
               data-he="כשחזרתי, החלטתי להקדיש את עצמי ללמוד מהטובים ביותר — בבית הספר לקולנוע מעלה. מאז אני מבמאי, מצלם, מפיק ועורך סרטים דוקומנטריים, עלילתיים, תוכן דיגיטלי, סרטי תדמית, סדרות לילדים, סרטי מרכזי מבקרים ועוד.">כשחזרתי, החלטתי להקדיש את עצמי ללמוד מהטובים ביותר — בבית הספר לקולנוע מעלה. מאז אני מבמאי, מצלם, מפיק ועורך סרטים דוקומנטריים, עלילתיים, תוכן דיגיטלי, סרטי תדמית, סדרות לילדים, סרטי מרכזי מבקרים ועוד.</p>
         
-        <a href="#contact" class="btn btn-fill" style="margin-top:28px;display:inline-flex;"
+        <a href="#contact" class="btn btn-fill" style="margin-top:28px;display:inline-flex;justify-content:center;text-align:center;"
            data-en="Let's Create Together →" data-he="בואו ניצור ביחד ←">בואו ניצור ביחד ←</a>
       </div>
     </div>
@@ -1602,7 +1593,7 @@
         <div class="form-row">
           <div class="form-group">
             <label data-en="Full Name" data-he="שם מלא">שם מלא</label>
-            <input type="text" name="name" required placeholder="השם שלכם">
+            <input type="text" name="name" required placeholder="השם שלכם" data-ph-he="השם שלכם" data-ph-en="Your name">
           </div>
           <div class="form-group">
             <label data-en="Email" data-he="אימייל">אימייל</label>
@@ -1615,7 +1606,7 @@
         </div>
         <div class="form-group">
           <label data-en="Tell us about your project" data-he="ספרו לנו על הפרויקט">ספרו לנו על הפרויקט</label>
-          <textarea name="message" rows="5" required placeholder="מה הרעיון שלכם? על מה תרצו לדבר?"></textarea>
+          <textarea name="message" rows="5" required placeholder="מה הרעיון שלכם? על מה תרצו לדבר?" data-ph-he="מה הרעיון שלכם? על מה תרצו לדבר?" data-ph-en="What's your idea? What would you like to talk about?"></textarea>
         </div>
         <div style="text-align:center;">
           <button type="submit" class="btn btn-fill contact-submit" data-en="Send Message →" data-he="שלחו הודעה ←">שלחו הודעה ←</button>
@@ -1684,16 +1675,16 @@
 <div class="video-modal" id="videoModal" onclick="if(event.target===this) closeVideoModal()">
   <div class="video-modal-inner">
     <div class="video-modal-close">
-      <span class="video-modal-top-brand">נועם קידר הפקות</span>
+      <span class="video-modal-top-brand" data-en="Noam Keidar Productions" data-he="נועם קידר הפקות">נועם קידר הפקות</span>
       <button type="button" class="video-modal-close-btn" onclick="closeVideoModal()" aria-label="סגור">✕</button>
     </div>
     <div class="video-modal-info" id="videoModalInfo">
-      <div class="video-modal-label">פרוייקט</div>
+      <div class="video-modal-label" data-en="Project" data-he="פרוייקט">פרוייקט</div>
       <h2 class="video-modal-title" id="videoModalTitle"></h2>
       <div class="video-modal-client" id="videoModalClient"></div>
       <hr class="video-modal-divider">
       <p class="video-modal-desc" id="videoModalDesc"></p>
-      <a class="video-modal-yt-link" id="videoModalFallback" target="_blank" rel="noopener">↗ צפו ביוטיוב</a>
+      <a class="video-modal-yt-link" id="videoModalFallback" target="_blank" rel="noopener" data-en="↗ Watch on YouTube" data-he="↗ צפו ביוטיוב">↗ צפו ביוטיוב</a>
     </div>
     <div class="video-modal-frame" id="videoModalFrame"></div>
   </div>
@@ -1789,6 +1780,15 @@
       if(navMap[href]) a.textContent = navMap[href];
     });
 
+    // Form placeholders
+    document.querySelectorAll('[data-ph-en]').forEach(el => {
+      el.placeholder = isEn ? el.dataset.phEn : el.dataset.phHe;
+    });
+    // Modal close button aria
+    document.querySelectorAll('.video-modal-close-btn').forEach(b => {
+      b.setAttribute('aria-label', isEn ? 'Close' : 'סגור');
+    });
+
     // WA float button tooltip
     const waFloat = document.querySelector('.wa-float');
     if(waFloat) waFloat.setAttribute('aria-label', isEn ? 'WhatsApp' : 'וואטסאפ');
@@ -1855,9 +1855,14 @@
   const galleryMore = document.getElementById('galleryMore');
   if(loadMoreBtn && galleryMore){
     loadMoreBtn.addEventListener('click', ()=>{
-      galleryMore.style.display = 'grid';
-      // trigger reveal animations on newly visible items
-      galleryMore.classList.add('revealed');
+      // Merge extra videos into the main gallery so grid rows flow
+      // continuously with a single uniform gap (no extra spacing).
+      const mainGallery = document.querySelector('#projects .gallery-initial');
+      while(galleryMore.firstElementChild){
+        mainGallery.appendChild(galleryMore.firstElementChild);
+      }
+      galleryMore.remove();
+      mainGallery.classList.add('revealed');
       loadMoreBtn.closest('.load-more-wrap').style.display = 'none';
     });
   }
@@ -1902,6 +1907,35 @@
     });
   }
 
+
+  // English metadata per video (used by the lightbox in EN mode)
+  const VIDEO_EN = {
+    'prS_-I7vi_8': {t:'Showreel', c:'Noam Keidar Productions', d:'Storytelling that feels different — the Noam Keidar Productions showreel.'},
+    '49ccTtgcFrI': {t:'The End of Days', c:'Meir Channel / YES', d:'A documentary on the End of Days from a Jewish perspective, aired on the Meir Channel.'},
+    'DAHJ0mGFJ3A': {t:'Beret March', c:'Meir Kids Channel', d:'The first episode of the Meir Kids travel series.'},
+    'ej6Rh4bMVcA': {t:'Torah Scroll Dedication', c:'Maale Eliyahu Yeshiva', d:'With the President of Israel, in memory of Capt. Liron Snir.'},
+    'zRF90lljf08': {t:'Safe Home — Gush Etzion', c:'Gush Etzion Regional Council', d:'The Safe Home project for seniors in Gush Etzion.'},
+    'BvO336MBojE': {t:'Grandma Patrol', c:'Hemed Digital', d:'A unique initiative connecting generations through technology.'},
+    '5bU8EBTee4c': {t:'Mishkan HaTchelet Trailer', c:'Real Estate Project', d:'A cinematic trailer for a luxury residential project.'},
+    'pu0wQCDxrIQ': {t:'Beauty for Ashes', c:'Gush Katif Day', d:'Promo — Gush Katif Day in the education system.'},
+    'LWWShMpu7Kk': {t:'Matzot for All', c:'Hachima Initiative', d:'An educational film on making matzot accessible to everyone.'},
+    'qZZ8Hao2wCg': {t:'The Chida', c:'Hachima Initiative', d:'A documentary about the Chida — one of the greatest halachic authorities.'},
+    'OyQZo7ME7Cg': {t:'The Covenant of Gerar', c:'Katif Center', d:'On Abraham\'s covenant with Abimelech — directed, filmed and edited by Noam Keidar.'},
+    'trhH_K3chsQ': {t:'LeHitaneg BeTaanugim', c:'Musical Ensemble', d:'A music video for a Shabbat piyyut. Filming and editing: Noam Keidar.'},
+    'L_ByHcHSa-M': {t:'Grandma Patrol — Shvat', c:'Hemed Digital', d:'Another episode in the Grandma Patrol series.'},
+    '2sk7sWt9m1Q': {t:'Beer in the Desert', c:'Tekoa Festival', d:'The Tekoa beer festival — atmosphere, music and beautiful people.'},
+    '5LaHv7NhCNI': {t:'Litov Hotel at the Kotel', c:'Litov Hotels', d:'A brand film for the Litov Hotel at the Western Wall.'},
+    'OWIVimyfWDg': {t:'Tefillin Beit El Visitor Center', c:'Tefillin Beit El', d:'A meaningful, moving experience for the whole family.'},
+    '0u_-1hICSeM': {t:'A Song of Thanks', c:'Yehudah Katz VeHamaagal', d:'Official music video for artist Yehudah Katz.'},
+    '6l4F7y_OuCM': {t:'Dad for a Day — Paytan', c:'TV Series', d:'An episode from the TV series Dad for a Day.'},
+    'yEyr9zd6RuA': {t:'Dad for a Day — Paragliding', c:'TV Series', d:'A paragliding adventure over the Gilboa.'},
+    'XAMvytyOhVM': {t:'Your Sweet Light — Trailer', c:'Ma\'aleh VOD', d:'Trailer — a couple coping in the shadow of a mission.'},
+    '9AO3BpwUxBU': {t:'Glat Spiel — Behind the Scenes', c:'Glat Spiel', d:'Behind the scenes of a Hasidic performance.'},
+    'TGkHbhhvJRk': {t:'Shlomo Avrahami', c:'Client', d:'We worked with Noam on a complex brand film.'},
+    'ehiqPIh_Hpw': {t:'Arik Wurzburger', c:'Client', d:''},
+    'bef3GOej2mw': {t:'Sara Bak', c:'Hachima Initiative', d:'Noam understands a human story.'}
+  };
+
   // === VIDEO LIGHTBOX ===
   function openVideoModal(videoId, title, client, desc){
     const modal = document.getElementById('videoModal');
@@ -1915,12 +1949,16 @@
 
     // decode HTML entities that were escaped for the data attribute
     const decode = s => { const t=document.createElement('textarea'); t.innerHTML=s||''; return t.value; };
-    const t = decode(title), c = decode(client), d = decode(desc);
+    let t = decode(title), c = decode(client), d = decode(desc);
+    // In English mode, use the English metadata for this video
+    if(currentLang === 'en' && VIDEO_EN[videoId]){
+      t = VIDEO_EN[videoId].t; c = VIDEO_EN[videoId].c; d = VIDEO_EN[videoId].d;
+    }
 
     if(titleEl) titleEl.textContent = t || '';
     if(clientEl){ clientEl.textContent = c || ''; clientEl.style.display = c ? '' : 'none'; }
     if(descEl){ descEl.textContent = d || ''; descEl.style.display = d ? '' : 'none'; }
-    if(label) label.textContent = t ? 'פרוייקט' : 'סרטון';
+    if(label) label.textContent = (currentLang === 'en') ? (t ? 'Project' : 'Video') : (t ? 'פרוייקט' : 'סרטון');
     // hide info panel entirely if no text at all
     if(infoEl) infoEl.style.display = (t||c||d) ? '' : 'none';
 
