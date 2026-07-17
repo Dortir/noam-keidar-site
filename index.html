@@ -1595,6 +1595,8 @@
         <input type="hidden" name="_captcha" value="false">
         <input type="hidden" name="_template" value="box">
         <input type="hidden" name="_cc" value="dortiram15@gmail.com">
+        <!-- Honeypot: bots fill this hidden field, FormSubmit then drops the submission. No friction for real users. -->
+        <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none !important;">
         <div class="form-row">
           <div class="form-group">
             <label data-en="Full Name" data-he="שם מלא">שם מלא</label>
@@ -1943,6 +1945,9 @@
 
   // === VIDEO LIGHTBOX ===
   function openVideoModal(videoId, title, client, desc){
+    // Defense-in-depth: videoId is concatenated into an iframe src below, so
+    // reject anything that isn't a valid 11-char YouTube id before use.
+    if(!/^[A-Za-z0-9_-]{11}$/.test(videoId)){ return; }
     const modal = document.getElementById('videoModal');
     const frame = document.getElementById('videoModalFrame');
     const fallback = document.getElementById('videoModalFallback');
