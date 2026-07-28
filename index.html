@@ -1662,7 +1662,7 @@
           <li><span class="footer-contact-icon">📍</span><span data-en="Jerusalem, Israel" data-he="ירושלים, ישראל">ירושלים, ישראל</span></li>
           
           
-          <li><span class="footer-contact-icon">🌐</span><a href="https://www.noamkeidar.com" target="_blank">noam-keidar-site.vercel.app</a></li>
+          <li><span class="footer-contact-icon">🌐</span><a href="https://www.noamkeidar.com" target="_blank">noamkeidar.com</a></li>
         </ul>
       </div>
     </div>
@@ -1752,7 +1752,16 @@
 
   // === LANGUAGE SWITCHER (HE ↔ EN) ===
   const langBtn = document.getElementById('langToggle');
-  let currentLang = localStorage.getItem('site-lang') || 'he';
+  // Language priority: URL path (/en) > saved preference > Hebrew default.
+  // /en is a real, shareable link (Noam sent it to clients), so the path wins.
+  function langFromPath(){
+    return /^\/en(\/|$)/i.test(window.location.pathname) ? 'en' : 'he';
+  }
+  // The URL path is authoritative: /en => English, anything else => Hebrew.
+  // We deliberately do NOT fall back to localStorage here, so that the plain
+  // root URL is always Hebrew for every visitor, and /en is always English —
+  // predictable, shareable links that don't depend on a person's history.
+  let currentLang = langFromPath();
 
   function applyLang(lang){
     const isEn = lang === 'en';
@@ -1820,6 +1829,15 @@
     currentLang = lang;
     localStorage.setItem('site-lang', lang);
 
+    // Keep the URL in sync so /en is a real shareable English link.
+    // Preserve any hash (e.g. #contact) when rewriting the path.
+    try {
+      const targetPath = isEn ? '/en' : '/';
+      if(window.location.pathname.replace(/\/$/, '') !== targetPath.replace(/\/$/, '')){
+        history.replaceState(null, '', targetPath + window.location.hash);
+      }
+    } catch(e){ /* history API unavailable — ignore */ }
+
     // Scroll to top smoothly when switching language
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -1831,8 +1849,8 @@
   document.querySelectorAll('.lang-toggle').forEach(btn => {
     if(btn !== langBtn) btn.addEventListener('click', () => applyLang(currentLang === 'he' ? 'en' : 'he'));
   });
-  // Apply saved language on load
-  if(currentLang === 'en') applyLang('en');
+  // Apply the language dictated by the URL path on load
+  applyLang(currentLang);
 
 
   if('IntersectionObserver' in window){
