@@ -1223,6 +1223,30 @@
     background:var(--paper);
     padding:clamp(50px,8vw,90px) 0;
   }
+  .form-success{
+    text-align:center; padding:40px 24px; animation:successPop .5s ease;
+  }
+  .form-success-icon{
+    width:64px; height:64px; margin:0 auto 18px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:34px; color:#fff; font-weight:700;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 8px 24px rgba(219,92,128,.35);
+  }
+  .form-success-title{
+    font-family:'Frank Ruhl Libre',serif; font-size:clamp(24px,3vw,32px);
+    color:var(--ink); margin:0 0 8px;
+  }
+  .form-success-text{ color:var(--ink-soft); font-size:16px; margin:0; }
+  @keyframes successPop{
+    0%{ opacity:0; transform:translateY(12px) scale(.96); }
+    100%{ opacity:1; transform:translateY(0) scale(1); }
+  }
+  .form-error{
+    margin-top:16px; text-align:center; color:var(--accent);
+    font-size:14px; font-weight:600;
+  }
+  .contact-submit.is-loading{ opacity:.65; pointer-events:none; }
   .contact-form-wrap{
     max-width:640px; margin:0 auto;
   }
@@ -1591,11 +1615,12 @@
       <div class="title-bar"></div>
     </div>
     <div class="contact-form-wrap">
-      <form class="contact-form" action="https://formsubmit.co/noamkeidar82@gmail.com" method="POST">
+      <form class="contact-form" id="contactForm" action="https://formsubmit.co/noamkeidar82@gmail.com" method="POST">
         <input type="hidden" name="_subject" value="פנייה חדשה מהאתר — נועם קידר הפקות">
         <input type="hidden" name="_captcha" value="false">
         <input type="hidden" name="_template" value="box">
         <input type="hidden" name="_cc" value="dortiram15@gmail.com">
+        <input type="hidden" name="_language" id="formLang" value="he">
         <!-- Honeypot: bots fill this hidden field, FormSubmit then drops the submission. No friction for real users. -->
         <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none !important;">
         <div class="form-row">
@@ -1620,6 +1645,12 @@
           <button type="submit" class="btn btn-fill contact-submit" data-en="Send Message →" data-he="שלחו הודעה ←">שלחו הודעה ←</button>
         </div>
       </form>
+      <div class="form-success" id="formSuccess" hidden>
+        <div class="form-success-icon" aria-hidden="true">✓</div>
+        <h3 class="form-success-title" data-en="Thank you!" data-he="תודה רבה!">תודה רבה!</h3>
+        <p class="form-success-text" data-en="Your message was sent. Noam will get back to you soon." data-he="ההודעה נשלחה. נועם יחזור אליכם בהקדם.">ההודעה נשלחה. נועם יחזור אליכם בהקדם.</p>
+      </div>
+      <p class="form-error" id="formError" hidden data-en="Something went wrong. Please try again, or email us directly." data-he="משהו השתבש. נסו שוב, או שלחו לנו מייל ישירות.">משהו השתבש. נסו שוב, או שלחו לנו מייל ישירות.</p>
     </div>
   </div>
 </section>
@@ -2006,6 +2037,47 @@
   document.addEventListener('keydown', e=>{
     if(e.key === 'Escape'){ closeVideoModal(); }
   });
+
+  // ---- Contact form: submit via AJAX so the user never leaves the site ----
+  (function(){
+    const form = document.getElementById('contactForm');
+    if(!form) return;
+    const successBox = document.getElementById('formSuccess');
+    const errorBox = document.getElementById('formError');
+    const submitBtn = form.querySelector('.contact-submit');
+    const langField = document.getElementById('formLang');
+    const AJAX_ENDPOINT = 'https://formsubmit.co/ajax/noamkeidar82@gmail.com';
+
+    form.addEventListener('submit', async function(e){
+      e.preventDefault();
+      errorBox.hidden = true;
+      const isEn = document.documentElement.dir === 'ltr';
+      if(langField) langField.value = isEn ? 'en' : 'he';
+      const honey = form.querySelector('[name="_honey"]');
+      if(honey && honey.value){ return; }
+      submitBtn.classList.add('is-loading');
+      const originalLabel = submitBtn.textContent;
+      submitBtn.textContent = isEn ? 'Sending…' : 'שולח…';
+      try {
+        const data = new FormData(form);
+        const res = await fetch(AJAX_ENDPOINT, {
+          method: 'POST', body: data, headers: { 'Accept': 'application/json' }
+        });
+        const json = await res.json().catch(()=>({}));
+        if(res.ok && (json.success === 'true' || json.success === true)){
+          form.hidden = true;
+          successBox.hidden = false;
+          successBox.scrollIntoView({ behavior:'smooth', block:'center' });
+        } else {
+          throw new Error(json.message || 'submit failed');
+        }
+      } catch(err) {
+        errorBox.hidden = false;
+        submitBtn.classList.remove('is-loading');
+        submitBtn.textContent = originalLabel;
+      }
+    });
+  })();
 </script>
 </body>
 </html>
