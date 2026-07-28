@@ -718,6 +718,7 @@
     background:linear-gradient(135deg, var(--paper) 0%, color-mix(in srgb,var(--accent) 20%,var(--paper)) 100%);
   }
   .hvb{ position:absolute; inset:0; z-index:0; overflow:hidden; }
+  .hvb-shield{ position:absolute; inset:0; z-index:3; background:transparent; pointer-events:auto; }
   .hvb-thumb{
     position:absolute; inset:0;
     background-size:cover; background-position:center;
@@ -725,12 +726,11 @@
   }
   .hvb iframe{
     position:absolute; top:50%; left:50%;
-    /* scale() crops the video edges so the faded in-video logo
-       watermark stays outside the visible frame */
-    transform:translate(-50%,-50%) scale(1.25);
+    /* Keep the full video frame — no heavy crop. */
+    transform:translate(-50%,-50%) scale(1.02);
     width:calc(max(100vw, calc(100vh * 1.78)));
     height:calc(max(100vh, calc(100vw * .5625)));
-    pointer-events:none; border:0;
+    pointer-events:none; border:0; z-index:1;
     opacity:0; transition:opacity 2s ease;
   }
   .hvb iframe.hv-ready{ opacity:.9; }
@@ -1353,6 +1353,7 @@
 
 <section class="hero-video-full" id="top">
   <div class="hvb">
+    <div class="hvb-shield"></div>
     <div class="hvb-thumb" style="background-image:url('https://i.ytimg.com/vi/prS_-I7vi_8/maxresdefault.jpg')"></div>
     <iframe
       src="https://www.youtube.com/embed/prS_-I7vi_8?autoplay=1&mute=1&loop=1&playlist=prS_-I7vi_8&controls=0&disablekb=1&fs=0&modestbranding=1&playsinline=1&rel=0&showinfo=0&iv_load_policy=3&cc_load_policy=0"
