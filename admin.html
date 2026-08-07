@@ -575,13 +575,19 @@
     // optimistic local update
     updates.forEach(u=>{ const v=videos.find(x=>x.id===u.id); if(v) v.sort_order=u.sort_order; });
     videos.sort((a,b)=>a.sort_order-b.sort_order);
-    // persist all changed orders
-    const { error } = await sb.from('videos').upsert(updates.map(u=>{
-      const v = videos.find(x=>x.id===u.id);
-      return { ...v, sort_order:u.sort_order };
-    }));
-    if(error){ toast('שמירת הסדר נכשלה', 'err'); loadVideos(); }
-    else toast('הסדר נשמר', 'ok');
+   // Persist ONLY the sort_order of each changed row, per-row, so we never
+    // write managed columns like created_at / updated_at (owned by the trigger).
+    try {
+      const results = await Promise.all(
+        updates.map(u => sb.from('videos').update({ sort_order:u.sort_order }).eq('id', u.id))
+      );
+      const failed = results.find(r => r.error);
+      if(failed) throw failed.error;
+      toast('הסדר נשמר', 'ok');
+    } catch(e){
+      toast('שמירת הסדר נכשלה', 'err');
+      loadVideos();
+    }
   }
 
   // ---------- Init ----------
