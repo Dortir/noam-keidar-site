@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>ניהול סרטונים — נועם קידר הפקות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;700;900&family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#181818; --card:#242424; --card-2:#2c2c2c;
+    --ink:#f0ece8; --ink-soft:rgba(240,236,232,.68);
+    --accent:#db5c80; --accent2:#e8974c;
+    --line:rgba(240,236,232,.12);
+    --ok:#4caf7d; --danger:#e0555b;
+    --radius:14px;
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{
+    font-family:'IBM Plex Sans Hebrew',sans-serif;
+    background:var(--paper); color:var(--ink);
+    min-height:100vh; line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{ font-family:'Frank Ruhl Libre',serif; font-weight:700; }
+  button{ font-family:inherit; cursor:pointer; border:0; }
+  input,select,textarea{ font-family:inherit; }
+  a{ color:var(--accent); }
+
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 22px; border-bottom:1px solid var(--line);
+    background:var(--card); position:sticky; top:0; z-index:10;
+  }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .brand-mark{
+    width:38px; height:38px; border-radius:10px; flex-shrink:0;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:flex; align-items:center; justify-content:center;
+    font-family:Georgia,serif; font-weight:700; color:#fff; font-size:17px;
+  }
+  .brand-title{ font-size:16px; }
+  .brand-sub{ font-size:12px; color:var(--ink-soft); }
+  .btn{
+    padding:10px 18px; border-radius:10px; font-weight:600; font-size:14px;
+    background:var(--card-2); color:var(--ink); transition:.18s;
+  }
+  .btn:hover{ background:#383838; }
+  .btn-primary{
+    background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff;
+  }
+  .btn-primary:hover{ filter:brightness(1.08); background:linear-gradient(135deg,var(--accent),var(--accent2)); }
+  .btn-danger{ background:transparent; color:var(--danger); border:1px solid rgba(224,85,91,.4); }
+  .btn-danger:hover{ background:rgba(224,85,91,.12); }
+  .btn-sm{ padding:7px 12px; font-size:13px; }
+
+  .wrap{ max-width:820px; margin:0 auto; padding:24px 18px 80px; }
+
+  /* ---- Login ---- */
+  .login-card{
+    max-width:400px; margin:12vh auto 0; background:var(--card);
+    border:1px solid var(--line); border-radius:var(--radius); padding:34px 30px;
+  }
+  .login-card h1{ font-size:26px; margin-bottom:6px; }
+  .login-card p{ color:var(--ink-soft); font-size:14px; margin-bottom:24px; }
+  .field{ margin-bottom:16px; }
+  .field label{ display:block; font-size:13px; font-weight:600; margin-bottom:6px; color:var(--ink-soft); }
+  .field input, .field select, .field textarea{
+    width:100%; padding:12px 14px; border-radius:10px;
+    background:var(--paper); border:1px solid var(--line); color:var(--ink); font-size:15px;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{
+    outline:none; border-color:var(--accent);
+  }
+  .field textarea{ resize:vertical; min-height:70px; }
+  .msg{ font-size:13px; margin-top:10px; min-height:18px; }
+  .msg.error{ color:var(--danger); }
+  .msg.ok{ color:var(--ok); }
+
+  /* ---- Toolbar ---- */
+  .toolbar{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:12px; margin-bottom:20px; flex-wrap:wrap;
+  }
+  .tabs{ display:flex; gap:6px; background:var(--card); padding:5px; border-radius:12px; }
+  .tab{
+    padding:9px 16px; border-radius:8px; font-size:14px; font-weight:600;
+    background:transparent; color:var(--ink-soft); transition:.15s;
+  }
+  .tab.active{ background:var(--card-2); color:var(--ink); }
+
+  /* ---- Video list ---- */
+  .hint{ font-size:13px; color:var(--ink-soft); margin-bottom:14px; }
+  .vlist{ display:flex; flex-direction:column; gap:10px; }
+  .vrow{
+    display:flex; align-items:center; gap:14px;
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:12px 14px; transition:.15s;
+  }
+  .vrow.dragging{ opacity:.5; }
+  .vrow.hidden-row{ opacity:.55; }
+  .drag-handle{
+    cursor:grab; color:var(--ink-soft); font-size:20px; padding:4px 2px;
+    touch-action:none; user-select:none; flex-shrink:0;
+  }
+  .drag-handle:active{ cursor:grabbing; }
+  .vthumb{
+    width:96px; height:54px; border-radius:8px; object-fit:cover;
+    background:var(--card-2); flex-shrink:0;
+  }
+  .vinfo{ flex:1; min-width:0; }
+  .vtitle{ font-weight:600; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .vclient{ font-size:13px; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .vactions{ display:flex; gap:6px; flex-shrink:0; }
+  .icon-btn{
+    width:36px; height:36px; border-radius:9px; background:var(--card-2);
+    display:flex; align-items:center; justify-content:center; font-size:16px;
+    color:var(--ink); transition:.15s;
+  }
+  .icon-btn:hover{ background:#3a3a3a; }
+  .icon-btn.on{ color:var(--ok); }
+  .icon-btn.off{ color:var(--ink-soft); }
+
+  .empty{
+    text-align:center; padding:50px 20px; color:var(--ink-soft);
+    background:var(--card); border:1px dashed var(--line); border-radius:var(--radius);
+  }
+
+  /* ---- Modal ---- */
+  .modal-back{
+    position:fixed; inset:0; background:rgba(0,0,0,.6); backdrop-filter:blur(3px);
+    display:none; align-items:flex-start; justify-content:center; z-index:50;
+    padding:20px; overflow-y:auto;
+  }
+  .modal-back.open{ display:flex; }
+  .modal{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    width:100%; max-width:520px; padding:26px; margin:6vh 0;
+  }
+  .modal h2{ font-size:22px; margin-bottom:4px; }
+  .modal-sub{ font-size:13px; color:var(--ink-soft); margin-bottom:20px; }
+  .grid-2{ display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .modal-actions{ display:flex; gap:10px; margin-top:22px; }
+  .modal-actions .btn{ flex:1; text-align:center; padding:12px; }
+  .preview-thumb{
+    width:100%; aspect-ratio:16/9; border-radius:10px; object-fit:cover;
+    background:var(--paper); margin-bottom:14px; display:none;
+  }
+  .preview-thumb.show{ display:block; }
+  .spin{ display:inline-block; width:15px; height:15px; border:2px solid rgba(255,255,255,.3);
+    border-top-color:#fff; border-radius:50%; animation:sp .7s linear infinite; vertical-align:-2px; }
+  @keyframes sp{ to{ transform:rotate(360deg); } }
+
+  /* ---- Toast ---- */
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--card-2); color:var(--ink); padding:13px 22px; border-radius:12px;
+    font-size:14px; font-weight:600; box-shadow:0 8px 30px rgba(0,0,0,.4);
+    opacity:0; pointer-events:none; transition:.3s; z-index:100; border:1px solid var(--line);
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  .toast.ok{ border-color:rgba(76,175,125,.5); }
+  .toast.err{ border-color:rgba(224,85,91,.5); }
+
+  @media (max-width:600px){
+    .vthumb{ width:70px; height:40px; }
+    .vclient{ display:none; }
+    .grid-2{ grid-template-columns:1fr; }
+    .brand-sub{ display:none; }
+    .wrap{ padding:18px 12px 80px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN VIEW ============ -->
+<div id="loginView">
+  <div class="login-card">
+    <div class="brand" style="margin-bottom:22px;">
+      <div class="brand-mark">NK</div>
+      <div>
+        <div class="brand-title">ניהול סרטונים</div>
+        <div class="brand-sub">נועם קידר הפקות</div>
+      </div>
+    </div>
+    <h1>התחברות</h1>
+    <p>הזינו את פרטי ההתחברות כדי לנהל את הסרטונים באתר.</p>
+    <div class="field">
+      <label for="email">אימייל</label>
+      <input type="email" id="email" autocomplete="username" placeholder="you@example.com">
+    </div>
+    <div class="field">
+      <label for="password">סיסמה</label>
+      <input type="password" id="password" autocomplete="current-password" placeholder="••••••••">
+    </div>
+    <button class="btn btn-primary" id="loginBtn" style="width:100%; padding:13px;">התחברות</button>
+    <div class="msg error" id="loginMsg"></div>
+  </div>
+</div>
+
+<!-- ============ APP VIEW ============ -->
+<div id="appView" style="display:none;">
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">NK</div>
+      <div>
+        <div class="brand-title">ניהול סרטונים</div>
+        <div class="brand-sub">נועם קידר הפקות</div>
+      </div>
+    </div>
+    <button class="btn btn-sm" id="logoutBtn">התנתקות</button>
+  </div>
+
+  <div class="wrap">
+    <div class="toolbar">
+      <div class="tabs">
+        <button class="tab active" data-section="portfolio">תיק העבודות</button>
+        <button class="tab" data-section="testimonial">המלצות וידאו</button>
+      </div>
+      <button class="btn btn-primary" id="addBtn">+ הוספת סרטון</button>
+    </div>
+
+    <p class="hint">גררו סרטונים בעזרת הידית <span style="opacity:.7">⠿</span> כדי לשנות את הסדר. הסדר נשמר אוטומטית. לחצו על העין כדי להסתיר/להציג סרטון באתר בלי למחוק אותו.</p>
+
+    <div class="vlist" id="vlist"></div>
+    <div class="empty" id="emptyState" style="display:none;">אין סרטונים באזור הזה עדיין. לחצו על "הוספת סרטון" כדי להתחיל.</div>
+  </div>
+</div>
+
+<!-- ============ ADD/EDIT MODAL ============ -->
+<div class="modal-back" id="modalBack">
+  <div class="modal">
+    <h2 id="modalTitle">הוספת סרטון</h2>
+    <p class="modal-sub" id="modalSub">הדביקו קישור יוטיוב והפרטים יימשכו אוטומטית.</p>
+
+    <div class="field">
+      <label for="ytUrl">קישור יוטיוב</label>
+      <input type="text" id="ytUrl" placeholder="https://www.youtube.com/watch?v=...">
+      <div class="msg" id="ytMsg"></div>
+    </div>
+
+    <img class="preview-thumb" id="previewThumb" alt="תצוגה מקדימה">
+
+    <div class="grid-2">
+      <div class="field">
+        <label for="titleHe">כותרת (עברית)</label>
+        <input type="text" id="titleHe" placeholder="שם הסרטון">
+      </div>
+      <div class="field">
+        <label for="titleEn">כותרת (אנגלית)</label>
+        <input type="text" id="titleEn" placeholder="Video title">
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label for="clientHe">לקוח (עברית)</label>
+        <input type="text" id="clientHe" placeholder="שם הלקוח">
+      </div>
+      <div class="field">
+        <label for="clientEn">לקוח (אנגלית)</label>
+        <input type="text" id="clientEn" placeholder="Client name">
+      </div>
+    </div>
+    <div class="field">
+      <label for="descHe">תיאור קצר (עברית)</label>
+      <textarea id="descHe" placeholder="תיאור שיופיע כשלוחצים על הסרטון"></textarea>
+    </div>
+    <div class="field">
+      <label for="descEn">תיאור קצר (אנגלית)</label>
+      <textarea id="descEn" placeholder="Description shown when the video opens"></textarea>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn" id="cancelBtn">ביטול</button>
+      <button class="btn btn-primary" id="saveBtn">שמירה</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  'use strict';
+
+  // ============================================================
+  // CONFIG — replace with Noam's Supabase project values
+  // (same values as the main site; anon/publishable key is fine here
+  // because writes are gated by Supabase Auth + RLS)
+  // ============================================================
+  const SUPABASE_URL  = 'https://jpwdotptthopbvmfokiv.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impwd2RvdHB0dGhvcGJ2bWZva2l2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYwOTQ1MjcsImV4cCI6MjEwMTY3MDUyN30.18mK_sya4_ZIm-F3WkALl8xYJ1C2uJzRQB2vLGGFaHg';
+  // ============================================================
+
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  const $ = id => document.getElementById(id);
+  let currentSection = 'portfolio';
+  let videos = [];          // current section's videos
+  let editingId = null;     // null = adding, else editing this id
+
+  // ---------- Toast ----------
+  let toastTimer;
+  function toast(msg, kind){
+    const t = $('toast');
+    t.textContent = msg;
+    t.className = 'toast show ' + (kind||'');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=> t.className = 'toast', 2600);
+  }
+
+  // ---------- Auth ----------
+  async function checkSession(){
+    const { data } = await sb.auth.getSession();
+    if(data.session){ showApp(); }
+    else { showLogin(); }
+  }
+  function showLogin(){ $('loginView').style.display=''; $('appView').style.display='none'; }
+  function showApp(){ $('loginView').style.display='none'; $('appView').style.display=''; loadVideos(); }
+
+  $('loginBtn').addEventListener('click', doLogin);
+  $('password').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+  async function doLogin(){
+    const email = $('email').value.trim();
+    const password = $('password').value;
+    const msg = $('loginMsg');
+    msg.textContent = '';
+    if(!email || !password){ msg.textContent = 'נא למלא אימייל וסיסמה.'; return; }
+    $('loginBtn').innerHTML = '<span class="spin"></span>';
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+    $('loginBtn').textContent = 'התחברות';
+    if(error){ msg.textContent = 'ההתחברות נכשלה. בדקו את האימייל והסיסמה.'; return; }
+    showApp();
+  }
+  $('logoutBtn').addEventListener('click', async ()=>{
+    await sb.auth.signOut(); showLogin();
+  });
+
+  // ---------- Load & render ----------
+  async function loadVideos(){
+    const { data, error } = await sb.from('videos')
+      .select('*')
+      .eq('section', currentSection)
+      .order('sort_order', { ascending:true });
+    if(error){ toast('שגיאה בטעינת הסרטונים', 'err'); return; }
+    videos = data || [];
+    render();
+  }
+
+  function ytThumb(id){ return `https://i.ytimg.com/vi/${id}/mqdefault.jpg`; }
+
+  function render(){
+    const list = $('vlist');
+    list.innerHTML = '';
+    $('emptyState').style.display = videos.length ? 'none' : '';
+    videos.forEach(v => {
+      const row = document.createElement('div');
+      row.className = 'vrow' + (v.is_visible ? '' : ' hidden-row');
+      row.dataset.id = v.id;
+      row.innerHTML =
+        `<div class="drag-handle" title="גררו לשינוי סדר">⠿</div>
+         <img class="vthumb" src="${ytThumb(v.youtube_id)}" alt="" onerror="this.style.visibility='hidden'">
+         <div class="vinfo">
+           <div class="vtitle">${escapeHtml(v.title_he || '(ללא כותרת)')}</div>
+           <div class="vclient">${escapeHtml(v.client_he || '')}</div>
+         </div>
+         <div class="vactions">
+           <button class="icon-btn ${v.is_visible?'on':'off'}" data-act="toggle" title="${v.is_visible?'מוצג — לחצו כדי להסתיר':'מוסתר — לחצו כדי להציג'}">${v.is_visible?'👁':'🚫'}</button>
+           <button class="icon-btn" data-act="edit" title="עריכה">✏️</button>
+           <button class="icon-btn" data-act="delete" title="מחיקה">🗑</button>
+         </div>`;
+      list.appendChild(row);
+    });
+    wireRowActions();
+    wireDrag();
+  }
+
+  function escapeHtml(s){
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function wireRowActions(){
+    $('vlist').querySelectorAll('.icon-btn').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const id = Number(btn.closest('.vrow').dataset.id);
+        const act = btn.dataset.act;
+        const v = videos.find(x=>x.id===id);
+        if(act==='toggle') await toggleVisible(v);
+        else if(act==='edit') openEdit(v);
+        else if(act==='delete') await deleteVideo(v);
+      });
+    });
+  }
+
+  // ---------- Visibility toggle ----------
+  async function toggleVisible(v){
+    const { error } = await sb.from('videos').update({ is_visible: !v.is_visible }).eq('id', v.id);
+    if(error){ toast('לא הצלחנו לעדכן', 'err'); return; }
+    v.is_visible = !v.is_visible;
+    render();
+    toast(v.is_visible ? 'הסרטון מוצג באתר' : 'הסרטון הוסתר מהאתר', 'ok');
+  }
+
+  // ---------- Delete ----------
+  async function deleteVideo(v){
+    if(!confirm(`למחוק את "${v.title_he || 'הסרטון'}"? הפעולה אינה הפיכה.`)) return;
+    const { error } = await sb.from('videos').delete().eq('id', v.id);
+    if(error){ toast('המחיקה נכשלה', 'err'); return; }
+    videos = videos.filter(x=>x.id!==v.id);
+    render();
+    toast('הסרטון נמחק', 'ok');
+  }
+
+  // ---------- Tabs ----------
+  document.querySelectorAll('.tab').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      tab.classList.add('active');
+      currentSection = tab.dataset.section;
+      loadVideos();
+    });
+  });
+
+  // ---------- Add / Edit modal ----------
+  $('addBtn').addEventListener('click', ()=> openAdd());
+  $('cancelBtn').addEventListener('click', closeModal);
+  $('modalBack').addEventListener('click', e=>{ if(e.target===$('modalBack')) closeModal(); });
+
+  function openAdd(){
+    editingId = null;
+    $('modalTitle').textContent = 'הוספת סרטון';
+    $('modalSub').textContent = 'הדביקו קישור יוטיוב והפרטים יימשכו אוטומטית.';
+    ['ytUrl','titleHe','titleEn','clientHe','clientEn','descHe','descEn'].forEach(i=>$(i).value='');
+    $('ytMsg').textContent=''; $('previewThumb').className='preview-thumb';
+    $('modalBack').classList.add('open');
+    $('ytUrl').focus();
+  }
+  function openEdit(v){
+    editingId = v.id;
+    $('modalTitle').textContent = 'עריכת סרטון';
+    $('modalSub').textContent = 'ערכו את פרטי הסרטון ולחצו שמירה.';
+    $('ytUrl').value = `https://www.youtube.com/watch?v=${v.youtube_id}`;
+    $('titleHe').value=v.title_he||''; $('titleEn').value=v.title_en||'';
+    $('clientHe').value=v.client_he||''; $('clientEn').value=v.client_en||'';
+    $('descHe').value=v.desc_he||''; $('descEn').value=v.desc_en||'';
+    showPreview(v.youtube_id);
+    $('ytMsg').textContent='';
+    $('modalBack').classList.add('open');
+  }
+  function closeModal(){ $('modalBack').classList.remove('open'); }
+
+  // Extract YouTube ID from many URL formats
+  function extractYtId(url){
+    if(!url) return null;
+    url = url.trim();
+    // plain 11-char id
+    if(/^[\w-]{11}$/.test(url)) return url;
+    const patterns = [
+      /[?&]v=([\w-]{11})/,
+      /youtu\.be\/([\w-]{11})/,
+      /youtube\.com\/embed\/([\w-]{11})/,
+      /youtube\.com\/shorts\/([\w-]{11})/,
+      /youtube\.com\/live\/([\w-]{11})/
+    ];
+    for(const p of patterns){ const m = url.match(p); if(m) return m[1]; }
+    return null;
+  }
+
+  function showPreview(id){
+    const img = $('previewThumb');
+    img.src = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+    img.className = 'preview-thumb show';
+  }
+
+  // On paste/blur of the YouTube URL, fetch title via oEmbed (no API key needed)
+  $('ytUrl').addEventListener('input', debounce(onYtInput, 500));
+  async function onYtInput(){
+    const id = extractYtId($('ytUrl').value);
+    const msg = $('ytMsg');
+    if(!id){ msg.className='msg'; msg.textContent=''; $('previewThumb').className='preview-thumb'; return; }
+    showPreview(id);
+    msg.className='msg'; msg.innerHTML = '<span class="spin"></span> מושך פרטים…';
+    try{
+      const res = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`);
+      if(res.ok){
+        const data = await res.json();
+        // only auto-fill if empty, so we don't overwrite manual edits
+        if(!$('titleHe').value) $('titleHe').value = data.title || '';
+        msg.className='msg ok'; msg.textContent = 'נמצא: ' + (data.title||'');
+      } else {
+        msg.className='msg'; msg.textContent = 'קישור תקין. מלאו את הפרטים ידנית.';
+      }
+    }catch(e){
+      msg.className='msg'; msg.textContent = 'קישור תקין. מלאו את הפרטים ידנית.';
+    }
+  }
+
+  function debounce(fn, ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }; }
+
+  // ---------- Save (insert or update) ----------
+  $('saveBtn').addEventListener('click', saveVideo);
+  async function saveVideo(){
+    const id = extractYtId($('ytUrl').value);
+    if(!id){ $('ytMsg').className='msg error'; $('ytMsg').textContent='קישור יוטיוב לא תקין.'; return; }
+    if(!$('titleHe').value.trim()){ toast('נא למלא כותרת בעברית', 'err'); $('titleHe').focus(); return; }
+
+    const payload = {
+      youtube_id: id,
+      title_he: $('titleHe').value.trim(),
+      title_en: $('titleEn').value.trim(),
+      client_he: $('clientHe').value.trim(),
+      client_en: $('clientEn').value.trim(),
+      desc_he: $('descHe').value.trim(),
+      desc_en: $('descEn').value.trim(),
+      section: currentSection
+    };
+
+    $('saveBtn').innerHTML = '<span class="spin"></span>';
+    let error;
+    if(editingId){
+      ({ error } = await sb.from('videos').update(payload).eq('id', editingId));
+    } else {
+      // new video goes to the end of the current section
+      const maxOrder = videos.reduce((m,v)=>Math.max(m, v.sort_order||0), 0);
+      payload.sort_order = maxOrder + 10;
+      payload.is_visible = true;
+      ({ error } = await sb.from('videos').insert(payload));
+    }
+    $('saveBtn').textContent = 'שמירה';
+
+    if(error){ toast('השמירה נכשלה', 'err'); return; }
+    closeModal();
+    toast(editingId ? 'הסרטון עודכן' : 'הסרטון נוסף', 'ok');
+    await loadVideos();
+  }
+
+  // ---------- Drag to reorder ----------
+  let dragEl = null;
+  function wireDrag(){
+    const list = $('vlist');
+    list.querySelectorAll('.vrow').forEach(row=>{
+      const handle = row.querySelector('.drag-handle');
+      handle.addEventListener('pointerdown', e=>{
+        e.preventDefault();
+        dragEl = row;
+        row.classList.add('dragging');
+        row.setPointerCapture?.(e.pointerId);
+      });
+    });
+    list.addEventListener('pointermove', onDragMove);
+    list.addEventListener('pointerup', onDragEnd);
+    list.addEventListener('pointercancel', onDragEnd);
+  }
+  function onDragMove(e){
+    if(!dragEl) return;
+    const list = $('vlist');
+    const rows = [...list.querySelectorAll('.vrow:not(.dragging)')];
+    const after = rows.find(r=>{
+      const box = r.getBoundingClientRect();
+      return e.clientY < box.top + box.height/2;
+    });
+    if(after) list.insertBefore(dragEl, after);
+    else list.appendChild(dragEl);
+  }
+  async function onDragEnd(){
+    if(!dragEl) return;
+    dragEl.classList.remove('dragging');
+    dragEl = null;
+    // recompute order from DOM and persist
+    const rows = [...$('vlist').querySelectorAll('.vrow')];
+    const updates = rows.map((r,i)=>({ id:Number(r.dataset.id), sort_order:(i+1)*10 }));
+    // optimistic local update
+    updates.forEach(u=>{ const v=videos.find(x=>x.id===u.id); if(v) v.sort_order=u.sort_order; });
+    videos.sort((a,b)=>a.sort_order-b.sort_order);
+    // persist all changed orders
+    const { error } = await sb.from('videos').upsert(updates.map(u=>{
+      const v = videos.find(x=>x.id===u.id);
+      return { ...v, sort_order:u.sort_order };
+    }));
+    if(error){ toast('שמירת הסדר נכשלה', 'err'); loadVideos(); }
+    else toast('הסדר נשמר', 'ok');
+  }
+
+  // ---------- Init ----------
+  if(SUPABASE_URL.includes('YOUR_PROJECT')){
+    document.body.innerHTML = '<div style="padding:40px;text-align:center;color:#f0ece8;font-family:sans-serif">⚠️ הפאנל לא הוגדר עדיין — יש להזין את פרטי Supabase בקובץ.</div>';
+  } else {
+    checkSession();
+  }
+})();
+</script>
+</body>
+</html>
