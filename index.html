@@ -2143,6 +2143,103 @@
       }
     });
   })();
+
+  // ============================================================
+  // Supabase video loader (Phase 2)
+  // Fetches videos from Supabase and refreshes both galleries.
+  // If Supabase is unreachable, the baked-in HTML stays as fallback,
+  // so the site is never empty.
+  // ============================================================
+  (function(){
+    // --- CONFIG: replace with Noam's Supabase project values ---
+    const SUPABASE_URL  = 'https://jpwdotptthopbvmfokiv.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impwd2RvdHB0dGhvcGJ2bWZva2l2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYwOTQ1MjcsImV4cCI6MjEwMTY3MDUyN30.18mK_sya4_ZIm-F3WkALl8xYJ1C2uJzRQB2vLGGFaHg';
+    // -----------------------------------------------------------
+
+    // Bail quietly if not configured yet (keeps baked-in videos)
+    if(SUPABASE_URL.includes('YOUR_PROJECT') || SUPABASE_ANON.includes('YOUR_ANON')) return;
+
+    const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    const escJs = s => String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/\r?\n/g,' ');
+
+    // Build one video button matching the site's existing markup
+    function buildButton(v){
+      const t = esc(v.title_he), c = esc(v.client_he), d = esc(v.desc_he), en = esc(v.title_en);
+      const oc = `openVideoModal('${escJs(v.youtube_id)}','${escJs(v.title_he)}','${escJs(v.client_he)}','${escJs(v.desc_he)}')`;
+      return `<button type="button" class="media video" onclick="${oc}" aria-label="${t}">`
+           + `<img src="https://i.ytimg.com/vi/${esc(v.youtube_id)}/mqdefault.jpg" alt="${t}" loading="lazy" onerror="this.style.display='none'">`
+           + `<span class="video-title" data-en="${en}" data-he="${t}">${t}</span>`
+           + `<span class="play">&#9654;</span></button>`;
+    }
+
+    async function load(){
+      const url = `${SUPABASE_URL}/rest/v1/videos?is_visible=eq.true&order=section.asc,sort_order.asc`;
+      let rows;
+      try {
+        const res = await fetch(url, {
+          headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` }
+        });
+        if(!res.ok) throw new Error('supabase '+res.status);
+        rows = await res.json();
+        if(!Array.isArray(rows) || rows.length === 0) throw new Error('no rows');
+      } catch(e){
+        // keep the baked-in fallback silently
+        return;
+      }
+
+      const portfolio = rows.filter(r => r.section === 'portfolio');
+      const testimonial = rows.filter(r => r.section === 'testimonial');
+
+      // Rebuild PORTFOLIO gallery: first 10 in the initial grid, rest in "more"
+      const initial = document.querySelector('#projects .gallery-initial');
+      const more = document.getElementById('galleryMore');
+      const loadWrap = document.querySelector('#projects .load-more-wrap');
+      if(initial && portfolio.length){
+        const firstN = portfolio.slice(0, 10);
+        const restN  = portfolio.slice(10);
+        initial.innerHTML = firstN.map(buildButton).join('');
+        if(more){
+          if(restN.length){
+            more.innerHTML = restN.map(buildButton).join('');
+            more.style.display = 'none';
+            // reset the load-more button label + visibility
+            const btn = document.getElementById('loadMoreBtn');
+            if(btn){
+              const n = restN.length;
+              btn.setAttribute('data-en', `Show More (${n})`);
+              btn.setAttribute('data-he', `הצג עוד (${n})`);
+              btn.textContent = (document.documentElement.dir === 'ltr') ? `Show More (${n})` : `הצג עוד (${n})`;
+            }
+            if(loadWrap) loadWrap.style.display = '';
+          } else {
+            more.innerHTML = '';
+            if(loadWrap) loadWrap.style.display = 'none';
+          }
+        }
+      }
+
+      // Rebuild TESTIMONIAL videos
+      const centered = document.querySelector('#testimonial-videos .gallery-centered');
+      if(centered && testimonial.length){
+        centered.innerHTML = testimonial.map(buildButton).join('');
+      }
+
+      // Update English lightbox metadata for all loaded videos
+      rows.forEach(v => {
+        VIDEO_EN[v.youtube_id] = {
+          t: v.title_en || v.title_he,
+          c: v.client_en || v.client_he,
+          d: v.desc_en || v.desc_he
+        };
+      });
+
+      // Re-apply current language to the freshly rendered buttons
+      if(typeof applyLang === 'function') applyLang(currentLang);
+    }
+
+    // Load after the DOM is ready (script is at end of body, so go)
+    load();
+  })();
 </script>
 </body>
 </html>
