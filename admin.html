@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>ניהול סרטונים — נועם קידר הפקות</title>
+<title>ניהול תוכן — נועם קידר הפקות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;700;900&family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -171,6 +171,39 @@
     .brand-sub{ display:none; }
     .wrap{ padding:18px 12px 80px; }
   }
+
+  /* ---- Surface switch (videos / logos) ---- */
+  .surface-switch{
+    display:flex; gap:6px; background:var(--card); padding:5px; border-radius:12px;
+    margin-bottom:20px; width:fit-content;
+  }
+  .surface-btn{
+    padding:10px 20px; border-radius:8px; font-size:14px; font-weight:600;
+    background:transparent; color:var(--ink-soft); transition:.15s;
+  }
+  .surface-btn.active{ background:var(--card-2); color:var(--ink); }
+
+  /* ---- Logo list thumbnail (white bg, contained) ---- */
+  .lthumb{
+    width:78px; height:50px; border-radius:8px; object-fit:contain;
+    background:#fff; flex-shrink:0; padding:5px;
+  }
+
+  /* ---- Logo upload drop zone ---- */
+  .logo-drop{
+    border:1.5px dashed var(--line); border-radius:12px; padding:18px;
+    text-align:center; cursor:pointer; background:var(--paper); transition:.15s;
+    min-height:130px; display:flex; align-items:center; justify-content:center;
+    flex-direction:column; gap:10px;
+  }
+  .logo-drop:hover, .logo-drop.dragover{ border-color:var(--accent); background:#1e1e1e; }
+  .logo-drop .logo-preview{
+    display:none; max-height:96px; max-width:100%;
+    border-radius:8px; background:#fff; padding:8px;
+  }
+  .logo-drop.has-image .logo-preview{ display:block; }
+  #logoDropHint{ font-size:14px; color:var(--ink-soft); }
+  .logo-drop.has-image #logoDropHint{ font-size:12px; }
 </style>
 </head>
 <body>
@@ -181,12 +214,12 @@
     <div class="brand" style="margin-bottom:22px;">
       <div class="brand-mark">NK</div>
       <div>
-        <div class="brand-title">ניהול סרטונים</div>
+        <div class="brand-title">ניהול תוכן</div>
         <div class="brand-sub">נועם קידר הפקות</div>
       </div>
     </div>
     <h1>התחברות</h1>
-    <p>הזינו את פרטי ההתחברות כדי לנהל את הסרטונים באתר.</p>
+    <p>הזינו את פרטי ההתחברות כדי לנהל את התוכן באתר.</p>
     <div class="field">
       <label for="email">אימייל</label>
       <input type="email" id="email" autocomplete="username" placeholder="you@example.com">
@@ -206,7 +239,7 @@
     <div class="brand">
       <div class="brand-mark">NK</div>
       <div>
-        <div class="brand-title">ניהול סרטונים</div>
+        <div class="brand-title">ניהול תוכן</div>
         <div class="brand-sub">נועם קידר הפקות</div>
       </div>
     </div>
@@ -214,6 +247,12 @@
   </div>
 
   <div class="wrap">
+    <div class="surface-switch">
+      <button class="surface-btn active" data-surface="videos">🎬 סרטונים</button>
+      <button class="surface-btn" data-surface="logos">🖼️ לוגואים</button>
+    </div>
+
+    <div id="videosSurface">
     <div class="toolbar">
       <div class="tabs">
         <button class="tab active" data-section="portfolio">תיק העבודות</button>
@@ -226,6 +265,17 @@
 
     <div class="vlist" id="vlist"></div>
     <div class="empty" id="emptyState" style="display:none;">אין סרטונים באזור הזה עדיין. לחצו על "הוספת סרטון" כדי להתחיל.</div>
+    </div><!-- /videosSurface -->
+
+    <div id="logosSurface" style="display:none;">
+      <div class="toolbar">
+        <div style="font-weight:600; font-size:16px;">לוגואים של לקוחות</div>
+        <button class="btn btn-primary" id="addLogoBtn">+ הוספת לוגו</button>
+      </div>
+      <p class="hint">גררו לוגואים בעזרת הידית <span style="opacity:.7">⠿</span> כדי לשנות את הסדר. הסדר נשמר אוטומטית. לחצו על העין כדי להסתיר/להציג לוגו באתר בלי למחוק אותו.</p>
+      <div class="vlist" id="logoList"></div>
+      <div class="empty" id="logoEmptyState" style="display:none;">אין לוגואים עדיין. לחצו על "הוספת לוגו" כדי להתחיל.</div>
+    </div>
   </div>
 </div>
 
@@ -275,6 +325,40 @@
     <div class="modal-actions">
       <button class="btn" id="cancelBtn">ביטול</button>
       <button class="btn btn-primary" id="saveBtn">שמירה</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ADD/EDIT LOGO MODAL ============ -->
+<div class="modal-back" id="logoModalBack">
+  <div class="modal">
+    <h2 id="logoModalTitle">הוספת לוגו</h2>
+    <p class="modal-sub" id="logoModalSub">העלו קובץ תמונה (PNG/JPG) ומלאו את שם הלקוח.</p>
+
+    <div class="field">
+      <label>קובץ הלוגו</label>
+      <div id="logoDrop" class="logo-drop">
+        <img id="logoPreview" class="logo-preview" alt="">
+        <div id="logoDropHint">גררו קובץ לכאן או לחצו לבחירה</div>
+      </div>
+      <input type="file" id="logoFile" accept="image/*" style="display:none;">
+      <div class="msg" id="logoFileMsg"></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="field">
+        <label for="logoNameHe">שם (עברית)</label>
+        <input type="text" id="logoNameHe" placeholder="שם הלקוח">
+      </div>
+      <div class="field">
+        <label for="logoNameEn">שם (אנגלית)</label>
+        <input type="text" id="logoNameEn" placeholder="Client name">
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn" id="logoCancelBtn">ביטול</button>
+      <button class="btn btn-primary" id="logoSaveBtn">שמירה</button>
     </div>
   </div>
 </div>
@@ -587,6 +671,262 @@
     } catch(e){
       toast('שמירת הסדר נכשלה', 'err');
       loadVideos();
+    }
+  }
+
+  // ============================================================
+  // LOGOS MANAGEMENT  (parallel subsystem — never touches videos)
+  // ============================================================
+  let logos = [];
+  let editingLogoId = null;
+  let pendingLogoData = null;   // base64 data URI of a newly chosen image (null = keep existing)
+  let logosLoadedOnce = false;
+
+  // ---------- Surface switch (videos / logos) ----------
+  document.querySelectorAll('.surface-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.surface-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const s = btn.dataset.surface;
+      $('videosSurface').style.display = (s==='videos') ? '' : 'none';
+      $('logosSurface').style.display  = (s==='logos')  ? '' : 'none';
+      if(s==='logos' && !logosLoadedOnce){ logosLoadedOnce = true; loadLogos(); }
+    });
+  });
+
+  // ---------- Load & render ----------
+  async function loadLogos(){
+    const { data, error } = await sb.from('logos')
+      .select('*')
+      .order('sort_order', { ascending:true });
+    if(error){ toast('שגיאה בטעינת הלוגואים', 'err'); return; }
+    logos = data || [];
+    renderLogos();
+  }
+
+  function renderLogos(){
+    const list = $('logoList');
+    list.innerHTML = '';
+    $('logoEmptyState').style.display = logos.length ? 'none' : '';
+    logos.forEach(l=>{
+      const row = document.createElement('div');
+      row.className = 'vrow' + (l.is_visible ? '' : ' hidden-row');
+      row.dataset.id = l.id;
+      const nameHe = escapeHtml(l.name_he || l.name_en || '(ללא שם)');
+      const nameEn = escapeHtml(l.name_en || '');
+      const src = String(l.image_data || '').replace(/"/g,'&quot;');
+      row.innerHTML =
+        `<div class="drag-handle" title="גררו לשינוי סדר">\u283F</div>
+         <img class="lthumb" src="${src}" alt="" onerror="this.style.visibility='hidden'">
+         <div class="vinfo">
+           <div class="vtitle">${nameHe}</div>
+           <div class="vclient">${nameEn}</div>
+         </div>
+         <div class="vactions">
+           <button class="icon-btn ${l.is_visible?'on':'off'}" data-act="toggle" title="${l.is_visible?'מוצג — לחצו כדי להסתיר':'מוסתר — לחצו כדי להציג'}">${l.is_visible?'\uD83D\uDC41':'\uD83D\uDEAB'}</button>
+           <button class="icon-btn" data-act="edit" title="עריכה">\u270F\uFE0F</button>
+           <button class="icon-btn" data-act="delete" title="מחיקה">\uD83D\uDDD1</button>
+         </div>`;
+      list.appendChild(row);
+    });
+    wireLogoRowActions();
+    wireLogoDrag();
+  }
+
+  function wireLogoRowActions(){
+    $('logoList').querySelectorAll('.icon-btn').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const id = Number(btn.closest('.vrow').dataset.id);
+        const act = btn.dataset.act;
+        const l = logos.find(x=>x.id===id);
+        if(act==='toggle') await toggleLogoVisible(l);
+        else if(act==='edit') openLogoEdit(l);
+        else if(act==='delete') await deleteLogo(l);
+      });
+    });
+  }
+
+  // ---------- Visibility toggle ----------
+  async function toggleLogoVisible(l){
+    const { error } = await sb.from('logos').update({ is_visible: !l.is_visible }).eq('id', l.id);
+    if(error){ toast('לא הצלחנו לעדכן', 'err'); return; }
+    l.is_visible = !l.is_visible;
+    renderLogos();
+    toast(l.is_visible ? 'הלוגו מוצג באתר' : 'הלוגו הוסתר מהאתר', 'ok');
+  }
+
+  // ---------- Delete ----------
+  async function deleteLogo(l){
+    if(!confirm(`למחוק את "${l.name_he || l.name_en || 'הלוגו'}"? הפעולה אינה הפיכה.`)) return;
+    const { error } = await sb.from('logos').delete().eq('id', l.id);
+    if(error){ toast('המחיקה נכשלה', 'err'); return; }
+    logos = logos.filter(x=>x.id!==l.id);
+    renderLogos();
+    toast('הלוגו נמחק', 'ok');
+  }
+
+  // ---------- Add / Edit modal ----------
+  $('addLogoBtn').addEventListener('click', openLogoAdd);
+  $('logoCancelBtn').addEventListener('click', closeLogoModal);
+  $('logoModalBack').addEventListener('click', e=>{ if(e.target===$('logoModalBack')) closeLogoModal(); });
+
+  function resetLogoModal(){
+    $('logoNameHe').value=''; $('logoNameEn').value='';
+    $('logoFileMsg').textContent=''; $('logoFileMsg').className='msg';
+    pendingLogoData = null;
+    $('logoDrop').classList.remove('has-image');
+    $('logoPreview').src='';
+    $('logoDropHint').textContent='גררו קובץ לכאן או לחצו לבחירה';
+    $('logoFile').value='';
+  }
+
+  function openLogoAdd(){
+    editingLogoId = null;
+    $('logoModalTitle').textContent='הוספת לוגו';
+    $('logoModalSub').textContent='העלו קובץ תמונה (PNG/JPG) ומלאו את שם הלקוח.';
+    resetLogoModal();
+    $('logoModalBack').classList.add('open');
+  }
+
+  function openLogoEdit(l){
+    editingLogoId = l.id;
+    $('logoModalTitle').textContent='עריכת לוגו';
+    $('logoModalSub').textContent='עדכנו את השם, או העלו תמונה חדשה כדי להחליף.';
+    resetLogoModal();
+    $('logoNameHe').value = l.name_he||'';
+    $('logoNameEn').value = l.name_en||'';
+    if(l.image_data){
+      $('logoPreview').src = l.image_data;
+      $('logoDrop').classList.add('has-image');
+      $('logoDropHint').textContent='לחצו כדי להחליף תמונה';
+    }
+    $('logoModalBack').classList.add('open');
+  }
+
+  function closeLogoModal(){ $('logoModalBack').classList.remove('open'); }
+
+  // ---------- File -> base64 (downscaled, flattened onto white) ----------
+  const logoDrop = $('logoDrop');
+  logoDrop.addEventListener('click', ()=> $('logoFile').click());
+  $('logoFile').addEventListener('change', e=>{ if(e.target.files[0]) handleLogoFile(e.target.files[0]); });
+  logoDrop.addEventListener('dragover', e=>{ e.preventDefault(); logoDrop.classList.add('dragover'); });
+  logoDrop.addEventListener('dragleave', ()=> logoDrop.classList.remove('dragover'));
+  logoDrop.addEventListener('drop', e=>{
+    e.preventDefault(); logoDrop.classList.remove('dragover');
+    const f = e.dataTransfer.files[0];
+    if(f) handleLogoFile(f);
+  });
+
+  function handleLogoFile(file){
+    const msg = $('logoFileMsg');
+    if(!file.type.startsWith('image/')){ msg.className='msg error'; msg.textContent='נא לבחור קובץ תמונה.'; return; }
+    msg.className='msg'; msg.innerHTML='<span class="spin"></span> מעבד תמונה\u2026';
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      const img = new Image();
+      img.onload = ()=>{
+        // Logos display on white cards, so flatten onto white and cap the size.
+        const maxW=400, maxH=200;
+        let w=img.width, h=img.height;
+        const scale = Math.min(1, maxW/w, maxH/h);
+        w = Math.max(1, Math.round(w*scale));
+        h = Math.max(1, Math.round(h*scale));
+        const canvas = document.createElement('canvas');
+        canvas.width=w; canvas.height=h;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle='#fff'; ctx.fillRect(0,0,w,h);
+        ctx.drawImage(img,0,0,w,h);
+        pendingLogoData = canvas.toDataURL('image/jpeg', 0.88);
+        $('logoPreview').src = pendingLogoData;
+        $('logoDrop').classList.add('has-image');
+        $('logoDropHint').textContent='לחצו כדי להחליף תמונה';
+        const kb = Math.round(pendingLogoData.length * 0.75 / 1024);
+        msg.className='msg ok'; msg.textContent = `התמונה מוכנה (\u007E${kb}KB)`;
+      };
+      img.onerror = ()=>{ msg.className='msg error'; msg.textContent='לא הצלחנו לקרוא את התמונה.'; };
+      img.src = reader.result;
+    };
+    reader.onerror = ()=>{ msg.className='msg error'; msg.textContent='קריאת הקובץ נכשלה.'; };
+    reader.readAsDataURL(file);
+  }
+
+  // ---------- Save (insert or update) ----------
+  $('logoSaveBtn').addEventListener('click', saveLogo);
+  async function saveLogo(){
+    const nameHe = $('logoNameHe').value.trim();
+    const nameEn = $('logoNameEn').value.trim();
+    if(!nameHe && !nameEn){ toast('נא למלא שם (עברית או אנגלית)', 'err'); $('logoNameHe').focus(); return; }
+    if(!editingLogoId && !pendingLogoData){
+      $('logoFileMsg').className='msg error'; $('logoFileMsg').textContent='נא להעלות תמונת לוגו.'; return;
+    }
+
+    const payload = { name_he:nameHe, name_en:nameEn };
+    if(pendingLogoData) payload.image_data = pendingLogoData;
+
+    $('logoSaveBtn').innerHTML='<span class="spin"></span>';
+    let error;
+    if(editingLogoId){
+      ({ error } = await sb.from('logos').update(payload).eq('id', editingLogoId));
+    } else {
+      const maxOrder = logos.reduce((m,l)=>Math.max(m, l.sort_order||0), 0);
+      payload.sort_order = maxOrder + 10;
+      payload.is_visible = true;
+      ({ error } = await sb.from('logos').insert(payload));
+    }
+    $('logoSaveBtn').textContent='שמירה';
+    if(error){ toast('השמירה נכשלה', 'err'); return; }
+    closeLogoModal();
+    toast(editingLogoId ? 'הלוגו עודכן' : 'הלוגו נוסף', 'ok');
+    await loadLogos();
+  }
+
+  // ---------- Drag to reorder ----------
+  let dragLogoEl = null;
+  function wireLogoDrag(){
+    const list = $('logoList');
+    list.querySelectorAll('.vrow').forEach(row=>{
+      const handle = row.querySelector('.drag-handle');
+      handle.addEventListener('pointerdown', e=>{
+        e.preventDefault();
+        dragLogoEl = row;
+        row.classList.add('dragging');
+        row.setPointerCapture?.(e.pointerId);
+      });
+    });
+    list.addEventListener('pointermove', onLogoDragMove);
+    list.addEventListener('pointerup', onLogoDragEnd);
+    list.addEventListener('pointercancel', onLogoDragEnd);
+  }
+  function onLogoDragMove(e){
+    if(!dragLogoEl) return;
+    const list = $('logoList');
+    const rows = [...list.querySelectorAll('.vrow:not(.dragging)')];
+    const after = rows.find(r=>{
+      const box = r.getBoundingClientRect();
+      return e.clientY < box.top + box.height/2;
+    });
+    if(after) list.insertBefore(dragLogoEl, after);
+    else list.appendChild(dragLogoEl);
+  }
+  async function onLogoDragEnd(){
+    if(!dragLogoEl) return;
+    dragLogoEl.classList.remove('dragging');
+    dragLogoEl = null;
+    const rows = [...$('logoList').querySelectorAll('.vrow')];
+    const updates = rows.map((r,i)=>({ id:Number(r.dataset.id), sort_order:(i+1)*10 }));
+    updates.forEach(u=>{ const l=logos.find(x=>x.id===u.id); if(l) l.sort_order=u.sort_order; });
+    logos.sort((a,b)=>a.sort_order-b.sort_order);
+    // Persist ONLY sort_order per row, so we never write trigger-owned columns.
+    try {
+      const results = await Promise.all(
+        updates.map(u => sb.from('logos').update({ sort_order:u.sort_order }).eq('id', u.id))
+      );
+      const failed = results.find(r => r.error);
+      if(failed) throw failed.error;
+      toast('הסדר נשמר', 'ok');
+    } catch(e){
+      toast('שמירת הסדר נכשלה', 'err');
+      loadLogos();
     }
   }
 

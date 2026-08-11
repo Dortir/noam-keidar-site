@@ -2240,6 +2240,52 @@
     // Load after the DOM is ready (script is at end of body, so go)
     load();
   })();
+
+  // ============================================================
+  // Supabase logo loader (Phase 2)
+  // Fetches client logos from Supabase and rebuilds the marquee.
+  // If Supabase is unreachable or empty, the baked-in logos stay
+  // as fallback, so the strip is never empty.
+  // ============================================================
+  (function(){
+    const SUPABASE_URL  = 'https://jpwdotptthopbvmfokiv.supabase.co';
+    const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impwd2RvdHB0dGhvcGJ2bWZva2l2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYwOTQ1MjcsImV4cCI6MjEwMTY3MDUyN30.18mK_sya4_ZIm-F3WkALl8xYJ1C2uJzRQB2vLGGFaHg';
+
+    if(SUPABASE_URL.includes('YOUR_PROJECT') || SUPABASE_ANON.includes('YOUR_ANON')) return;
+
+    const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+    function buildLogo(l){
+      const name = esc(l.name_he || l.name_en || '');
+      // image_data is a base64 data URI (safe charset); guard against quotes just in case
+      const safeSrc = String(l.image_data || '').replace(/"/g,'&quot;');
+      return `<div class="client-logo" title="${name}"><img src="${safeSrc}" alt="${name}" loading="lazy"></div>`;
+    }
+
+    async function load(){
+      const url = `${SUPABASE_URL}/rest/v1/logos?is_visible=eq.true&order=sort_order.asc`;
+      let rows;
+      try {
+        const res = await fetch(url, {
+          headers: { apikey: SUPABASE_ANON, Authorization: `Bearer ${SUPABASE_ANON}` }
+        });
+        if(!res.ok) throw new Error('supabase '+res.status);
+        rows = await res.json();
+        if(!Array.isArray(rows) || rows.length === 0) throw new Error('no rows');
+      } catch(e){
+        return; // keep the baked-in fallback silently
+      }
+
+      const track = document.querySelector('#clients .clients-track');
+      if(!track) return;
+      // The marquee animation translates the track by -50%, so it needs TWO
+      // identical halves for a seamless loop. Render the same group twice.
+      const group = '<div class="clients-group">' + rows.map(buildLogo).join('') + '</div>';
+      track.innerHTML = group + group;
+    }
+
+    load();
+  })();
 </script>
 </body>
 </html>
